@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const newsRoutes = require('./routes/newsRoutes');
 const carouselRoutes = require('./routes/carouselRoutes');
+const googleReviewsRoutes = require('./routes/googleReviewsRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
@@ -22,6 +23,7 @@ app.get('/', (_req, res) => {
 			health: '/health',
 			news: '/api/noticias',
 			carousel: '/api/carousel',
+			googleReviews: '/api/google-reviews',
 		},
 	});
 });
@@ -32,6 +34,7 @@ app.get('/health', (_req, res) => {
 
 app.use('/api/noticias', newsRoutes);
 app.use('/api/carousel', carouselRoutes);
+app.use('/api/google-reviews', googleReviewsRoutes);
 
 app.use(errorHandler);
 

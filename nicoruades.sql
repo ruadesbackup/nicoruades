@@ -101,9 +101,11 @@ CREATE TABLE google_reviews (
     author_name VARCHAR(100),
     content TEXT,
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+    review_url TEXT,
     profile_photo_url TEXT,
     is_visible BOOLEAN DEFAULT TRUE,
-    review_date TIMESTAMPTZ
+    review_date TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 -- =========================

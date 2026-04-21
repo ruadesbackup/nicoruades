@@ -71,6 +71,26 @@ function parseNewsId(value, previousItem = null) {
   return parsed;
 }
 
+function parseBoolean(value, fieldName) {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+
+    if (normalized === 'true') {
+      return true;
+    }
+
+    if (normalized === 'false') {
+      return false;
+    }
+  }
+
+  throw buildError(`${fieldName} debe ser un booleano.`);
+}
+
 async function validateNewsReference(newsId) {
   if (!newsId) {
     return;
@@ -86,13 +106,27 @@ function normalizePayload(body, files, previousItem = null) {
   const incomingDesktop = files?.img_desktop?.[0]?.path;
   const incomingMobile = files?.img_mobile?.[0]?.path;
 
-  const imgDesktop = incomingDesktop
-    ? filePathToPublicUrl(incomingDesktop)
-    : previousItem?.img_desktop || null;
+  const removeDesktop =
+    !incomingDesktop && body.remove_img_desktop !== undefined
+      ? parseBoolean(body.remove_img_desktop, 'remove_img_desktop')
+      : false;
 
-  const imgMobile = incomingMobile
-    ? filePathToPublicUrl(incomingMobile)
-    : previousItem?.img_mobile || null;
+  const removeMobile =
+    !incomingMobile && body.remove_img_mobile !== undefined
+      ? parseBoolean(body.remove_img_mobile, 'remove_img_mobile')
+      : false;
+
+  const imgDesktop = removeDesktop
+    ? null
+    : incomingDesktop
+      ? filePathToPublicUrl(incomingDesktop)
+      : previousItem?.img_desktop || null;
+
+  const imgMobile = removeMobile
+    ? null
+    : incomingMobile
+      ? filePathToPublicUrl(incomingMobile)
+      : previousItem?.img_mobile || null;
 
   const displayOrder = parseOrder(body.display_order, previousItem);
   const newsId = parseNewsId(body.news_id, previousItem);
@@ -108,6 +142,8 @@ function normalizePayload(body, files, previousItem = null) {
     news_id: newsId,
     incomingDesktop: Boolean(incomingDesktop),
     incomingMobile: Boolean(incomingMobile),
+    removeDesktop,
+    removeMobile,
   };
 }
 
@@ -145,7 +181,15 @@ async function updateCarousel(carouselId, body, files) {
     deleteLocalFile(existingItem.img_desktop);
   }
 
+  if (payload.removeDesktop) {
+    deleteLocalFile(existingItem.img_desktop);
+  }
+
   if (payload.incomingMobile) {
+    deleteLocalFile(existingItem.img_mobile);
+  }
+
+  if (payload.removeMobile) {
     deleteLocalFile(existingItem.img_mobile);
   }
 
