@@ -4,7 +4,7 @@ function PublicLayout({ children }) {
   return (
     <div className="public-shell">
       <header className="public-header">
-        <div className="public-header-inner">
+        <div className="public-header-inner public-marquina-surface">
           <Link to="/" className="brand-mark" aria-label="Inicio">
             Nicolas Ruades
           </Link>
@@ -23,7 +23,7 @@ function PublicLayout({ children }) {
       {children}
 
       <footer className="public-footer">
-        <div className="public-footer-inner">
+        <div className="public-footer-inner public-marquina-surface">
           <p>Estudio Jurídico Penal · Atención profesional y estratégica.</p>
         </div>
       </footer>

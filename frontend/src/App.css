@@ -90,6 +90,37 @@
   backdrop-filter: blur(14px);
 }
 
+.public-marquina-surface {
+  position: relative;
+  overflow: hidden;
+  background-color: #040404;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01) 20%, rgba(255, 255, 255, 0.018) 52%, rgba(255, 255, 255, 0.006) 100%),
+    repeating-linear-gradient(118deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(62deg, rgba(255, 255, 255, 0.016) 0 1px, transparent 1px 30px),
+    linear-gradient(180deg, #111111 0%, #050505 46%, #000000 100%);
+  background-blend-mode: screen, soft-light, soft-light, normal;
+}
+
+.public-marquina-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(116deg, transparent 0%, transparent 34%, rgba(255, 255, 255, 0.055) 37%, transparent 40%, transparent 62%, rgba(255, 255, 255, 0.028) 66%, transparent 70%, transparent 100%),
+    linear-gradient(14deg, transparent 0%, transparent 46%, rgba(255, 255, 255, 0.03) 49%, transparent 53%, transparent 100%),
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.018) 0, transparent 28%),
+    radial-gradient(circle at 82% 78%, rgba(255, 255, 255, 0.012) 0, transparent 26%);
+  opacity: 0.95;
+  filter: blur(0.35px);
+  pointer-events: none;
+}
+
+.public-marquina-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
 .public-header-inner {
   border-radius: 0;
   border-left: 0;

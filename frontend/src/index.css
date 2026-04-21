@@ -5,19 +5,12 @@
   line-height: 1.5;
   font-weight: 400;
   color: #dce5f2;
-  --marble-bg:
-    linear-gradient(rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.56)),
-    url('./assets/fondo.jpg');
-  background: var(--marble-bg);
-  background-position: center center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color-scheme: dark;
+  background: #000;
 }
 
 * {
@@ -28,16 +21,13 @@ html,
 body,
 #root {
   min-height: 100%;
+  background: #000;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--marble-bg);
-  background-position: center center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: #000;
 }
 
 a {

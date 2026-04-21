@@ -1,5 +1,7 @@
+import { useRef } from 'react'
 import SeoHead from '../../../shared/seo/SeoHead'
 import { useHomeData } from '../hooks/useHomeData'
+import googleLogo from '../../../assets/google.webp'
 import './HomePage.css'
 
 function ratingStars(value) {
@@ -25,9 +27,23 @@ function authorFallback(name) {
 
 function HomePage() {
   const { carouselSlides, reviews, loading, error } = useHomeData()
+  const reviewsScrollerRef = useRef(null)
   const desktopSlides = carouselSlides.filter((slide) => slide.imgDesktopUrl)
   const mobileSlides = carouselSlides.filter((slide) => slide.imgMobileUrl)
   const hasAnyCarouselSlide = desktopSlides.length > 0 || mobileSlides.length > 0
+  const canScrollReviews = reviews.length > 4
+
+  const scrollReviews = (direction) => {
+    const container = reviewsScrollerRef.current
+    if (!container) return
+
+    const firstCard = container.querySelector('.review-card-google')
+    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : container.clientWidth / 4
+    container.scrollBy({
+      left: direction * (cardWidth + 16),
+      behavior: 'smooth',
+    })
+  }
 
   const localBusinessJsonLd = {
     '@context': 'https://schema.org',
@@ -205,61 +221,134 @@ function HomePage() {
         </div>
       </section>
 
+      <section id="servicios" className="home-section services-section" aria-label="Servicios que brindamos">
+        <div className="home-section-heading">
+          <h2>Servicios que brindamos</h2>
+          <p>
+            Asesoramiento y defensa en áreas clave del derecho, con seguimiento profesional y estrategia personalizada.
+          </p>
+        </div>
+
+        <div className="services-grid">
+          <article className="service-card">
+            <h3>Penal</h3>
+            <p>Narcotráfico, asociaciones ilícitas y defensa penal integral en causas complejas.</p>
+          </article>
+
+          <article className="service-card">
+            <h3>Laboral</h3>
+            <p>Asistencia en conflictos laborales, reclamos y protección de derechos del trabajador.</p>
+          </article>
+
+          <article className="service-card">
+            <h3>ART</h3>
+            <p>Gestión de accidentes laborales, incapacidades y reclamos ante aseguradoras.</p>
+          </article>
+
+          <article className="service-card">
+            <h3>Civil</h3>
+            <p>Soluciones en controversias civiles, reclamos patrimoniales y asesoramiento legal.</p>
+          </article>
+
+          <article className="service-card">
+            <h3>Derecho de familia</h3>
+            <p>Divorcios, alimentos, cuidado personal, régimen de comunicación y medidas urgentes.</p>
+          </article>
+
+          <article className="service-card">
+            <h3>Accidente de tránsito</h3>
+            <p>Reclamos por daños y perjuicios, lesiones y seguimiento completo del caso.</p>
+          </article>
+
+          <article className="service-card">
+            <h3>Ejecuciones</h3>
+            <p>Defensa y gestión en procesos ejecutivos, cobros judiciales y embargos.</p>
+          </article>
+        </div>
+      </section>
+
       <section id="resenas" className="home-section reviews-section" aria-label="Reseñas de Google Maps">
         <div className="home-section-heading">
-          <h2>Comentarios de Google Maps</h2>
+          <div className="reviews-heading-brand">
+                <h2>Clientes satisfechos respaldan nuestro trabajo</h2>
+          </div>
           <p>Experiencias reales de clientes que confiaron su defensa al estudio.</p>
         </div>
 
         {error ? <div className="alert alert-danger">{error}</div> : null}
 
-        <div className="reviews-google-list" role="list">
+        <div className="reviews-carousel-shell">
+          {canScrollReviews ? (
+            <button
+              type="button"
+              className="reviews-carousel-arrow reviews-carousel-arrow-prev"
+              onClick={() => scrollReviews(-1)}
+              aria-label="Ver reseñas anteriores"
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+          ) : null}
+
+          <div className="reviews-google-list" ref={reviewsScrollerRef} role="list">
           {reviews.length === 0 ? (
             <article className="review-card">Aún no hay reseñas públicas para mostrar.</article>
           ) : (
-            reviews.map((review, index) => (
+            reviews.map((review) => (
               <article key={review.review_id} className="review-card review-card-google" role="listitem">
-                <span className="review-order" aria-hidden="true">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
+                <div className="review-card-content">
+                  <header className="review-header-google">
+                    <div className="review-author-google">
+                      {review.profile_photo_url ? (
+                        <img
+                          src={review.profile_photo_url}
+                          alt={`Foto de perfil de ${review.author_name || 'cliente'}`}
+                          className="review-author-avatar"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="review-author-avatar review-author-avatar-fallback" aria-hidden="true">
+                          {authorFallback(review.author_name)}
+                        </div>
+                      )}
 
-                <header className="review-header-google">
-                  <div className="review-author-google">
-                    {review.profile_photo_url ? (
-                      <img
-                        src={review.profile_photo_url}
-                        alt={`Foto de perfil de ${review.author_name || 'cliente'}`}
-                        className="review-author-avatar"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="review-author-avatar review-author-avatar-fallback" aria-hidden="true">
-                        {authorFallback(review.author_name)}
+                      <div className="review-author-meta">
+                        <strong>{review.author_name || 'Cliente'}</strong>
+                        <span>{formatReviewDate(review.review_date)}</span>
                       </div>
-                    )}
-
-                    <div className="review-author-meta">
-                      <strong>{review.author_name || 'Cliente'}</strong>
-                      <span>{formatReviewDate(review.review_date)}</span>
                     </div>
-                  </div>
 
-                  <div className="review-rating-google">
-                    <span className="review-stars-public">{ratingStars(review.rating)}</span>
-                    <span className="review-google-badge">Google</span>
-                  </div>
-                </header>
+                    <div className="review-rating-google">
+                      <span className="review-stars-public">{ratingStars(review.rating)}</span>
+                    </div>
+                  </header>
 
-                <p>{review.content || 'Reseña sin texto.'}</p>
+                  <p>{review.content || 'Reseña sin texto.'}</p>
+                </div>
 
-                {review.review_url ? (
-                  <a href={review.review_url} target="_blank" rel="noreferrer">
-                    Ver reseña original
-                  </a>
-                ) : null}
+                <div className="review-card-footer-google">
+                  <img src={googleLogo} alt="Google" className="review-google-mark" loading="lazy" />
+
+                  {review.review_url ? (
+                    <a href={review.review_url} target="_blank" rel="noreferrer">
+                      Ver reseña original
+                    </a>
+                  ) : null}
+                </div>
               </article>
             ))
           )}
+          </div>
+
+          {canScrollReviews ? (
+            <button
+              type="button"
+              className="reviews-carousel-arrow reviews-carousel-arrow-next"
+              onClick={() => scrollReviews(1)}
+              aria-label="Ver reseñas siguientes"
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+          ) : null}
         </div>
       </section>
     </main>
