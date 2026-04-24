@@ -340,96 +340,48 @@ function HomePage() {
   </div>
 </section>
 
-      <section
-        id="resenas"
-        className="home-section reviews-section reviews-section-bg"
-        aria-label="Reseñas de Google Maps"
-        style={{
-          position: 'relative',
-        }}
-      >
-        <div className="home-section-heading">
-          <div className="reviews-heading-brand">
-                <h2>Clientes satisfechos respaldan nuestro trabajo</h2>
-          </div>
-          <p>Experiencias reales de clientes que confiaron su defensa al estudio.</p>
-        </div>
+      {/* --- SECCIÓN TESTIMONIOS DE CLIENTES --- */}
+      <section className="home-section testimonials-section">
+        <div className="testimonials-grid">
+          {/* COLUMNA IZQUIERDA: TARJETAS DE RESEÑAS */}
+          <div className="testimonials-cards" ref={scrollRef}>
+            {reviews.map((review, index) => (
+                <div key={index} className="testimonial-card">
+                  {/* 1. NOMBRE ARRIBA */}
+                  <p className="testimonial-author-top">{review.author_name}</p>
 
-        {error ? <div className="alert alert-danger">{error}</div> : null}
+                  <div className="testimonial-header">
+                    {/* 2. ESTRELLAS ABAJO DEL NOMBRE */}
+                    <div className="testimonial-stars">{ratingStars(review.rating)}</div>
+                    {/* Título opcional, si la reseña de Maps tiene título */}
+                    {review.title && <h3 className="testimonial-title">{review.title}</h3>}
+                  </div>
 
-        <div className="reviews-carousel-shell">
-          {canScrollReviews ? (
-            <button
-              type="button"
-              className="reviews-carousel-arrow reviews-carousel-arrow-prev"
-              onClick={() => scrollReviews(-1)}
-              aria-label="Ver reseñas anteriores"
-            >
-              <span aria-hidden="true">‹</span>
-            </button>
-          ) : null}
+                  {/* 3. CONTENIDO DE LA RESEÑA */}
+                  <p className="testimonial-content">{review.content}</p>
 
-          <div className="reviews-google-list" ref={reviewsScrollerRef} role="list">
-          {reviews.length === 0 ? (
-            <article className="review-card">Aún no hay reseñas públicas para mostrar.</article>
-          ) : (
-            reviews.map((review) => (
-              <article key={review.review_id} className="review-card review-card-google" role="listitem">
-                <div className="review-card-content">
-                  <header className="review-header-google">
-                    <div className="review-author-google">
-                      {review.profile_photo_url && !brokenAvatarMap[review.review_id] ? (
-                        <img
-                          src={review.profile_photo_url}
-                          alt={`Foto de perfil de ${review.author_name || 'cliente'}`}
-                          className="review-author-avatar"
-                          loading="lazy"
-                          onError={() => markAvatarAsBroken(review.review_id)}
-                        />
-                      ) : (
-                        <div className="review-author-avatar review-author-avatar-fallback" aria-hidden="true">
-                          {authorFallback(review.author_name)}
-                        </div>
-                      )}
-
-                      <div className="review-author-meta">
-                        <strong>{review.author_name || 'Cliente'}</strong>
-                        <span>{formatReviewDate(review.review_date)}</span>
-                      </div>
-                    </div>
-
-                    <div className="review-rating-google">
-                      <span className="review-stars-public">{ratingStars(review.rating)}</span>
-                    </div>
-                  </header>
-
-                  <p>{review.content || 'Reseña sin texto.'}</p>
-                </div>
-
-                <div className="review-card-footer-google">
-                  <img src={googleLogo} alt="Google" className="review-google-mark" loading="lazy" />
-
-                  {review.review_url ? (
-                    <a href={review.review_url} target="_blank" rel="noreferrer">
-                      Ver reseña original
+                  {/* 4. LINK A GOOGLE MAPS */}
+                  {review.review_url && (
+                    <a 
+                      href={review.review_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="testimonial-maps-link"
+                    >
+                      Ver en Google Maps →
                     </a>
-                  ) : null}
+                  )}
                 </div>
-              </article>
-            ))
-          )}
+              ))}
           </div>
 
-          {canScrollReviews ? (
-            <button
-              type="button"
-              className="reviews-carousel-arrow reviews-carousel-arrow-next"
-              onClick={() => scrollReviews(1)}
-              aria-label="Ver reseñas siguientes"
-            >
-              <span aria-hidden="true">›</span>
-            </button>
-          ) : null}
+          {/* COLUMNA DERECHA: TEXTO ESTÁTICO */}
+          <div className="testimonials-text">
+            <h2 className="testimonials-title">Clientes <span>Satisfechos</span> respaldan nuestro trabajo</h2>
+            <p className="testimonials-description">
+              Experiencias reales de clientes que confiaron su defensa al estudio.
+            </p>
+          </div>
         </div>
       </section>
     </main>

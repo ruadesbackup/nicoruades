@@ -493,6 +493,180 @@ html, body {
   color: #fbbf24;
 }
 
+/* --- SECCIÓN TESTIMONIOS --- */
+/* --- SECCIÓN TESTIMONIOS --- */
+.testimonials-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5rem 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  margin: 2rem 0;
+  overflow: hidden;
+}
+
+.testimonials-grid {
+  display: flex;
+  gap: 2rem;
+  max-width: 1300px;
+  width: 100%;
+  align-items: stretch;
+}
+
+/* CONTENEDOR DE TARJETAS (Izquierda) */
+.testimonials-cards {
+  flex: 1;
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 2rem 1rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.testimonials-cards::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* TARJETA INDIVIDUAL */
+.testimonial-card {
+  flex: 0 0 320px;
+  scroll-snap-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Permite que el contenido fluya y el link se empuje al fondo */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  min-height: 300px;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-12px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #D4AF37;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ELEMENTOS DENTRO DE LA TARJETA */
+.testimonial-author-top {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.testimonial-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 1rem;
+}
+
+.testimonial-stars {
+  color: #D4AF37;
+  font-size: 1.1rem;
+}
+
+.testimonial-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff;
+  margin: 0.5rem 0;
+}
+
+.testimonial-content {
+  font-size: 0.95rem;
+  color: #D1D5DB;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* LINK A GOOGLE MAPS */
+.testimonial-maps-link {
+  margin-top: auto; /* Empuja el enlace al final de la tarjeta */
+  font-size: 0.85rem;
+  color: #9CA3AF;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.testimonial-maps-link:hover {
+  color: #D4AF37;
+  text-decoration: underline;
+}
+
+/* BLOQUE DE TEXTO DERECHA */
+.testimonials-text {
+  flex: 0 0 380px; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem;
+  background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(10, 10, 10, 0.95));
+  border-radius: 24px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  z-index: 2;
+}
+
+.testimonials-title {
+  font-size: 2.5rem;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.testimonials-title span {
+  color: #D4AF37;
+}
+
+.testimonials-description {
+  font-size: 1.1rem;
+  color: #9CA3AF;
+  line-height: 1.6;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .testimonials-grid {
+    flex-direction: column-reverse;
+  }
+  .testimonials-text {
+    flex: none;
+    width: 100%;
+    padding: 2rem;
+  }
+  .testimonial-card {
+    flex: 0 0 280px;
+  }
+}
+
+/* Responsive: En celulares ponemos el texto ARRIBA */
+@media (max-width: 992px) {
+  .testimonials-grid {
+    flex-direction: column-reverse; /* Texto primero, tarjetas abajo */
+  }
+  .testimonials-text {
+    flex: none;
+    width: 100%;
+  }
+}
+
 /* --- RESPONSIVE --- */
 @media (max-width: 991px) {
   .hero-banner-combo.fusion {
