@@ -1,7 +1,8 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import SeoHead from '../../../shared/seo/SeoHead'
 import { useHomeData } from '../hooks/useHomeData'
 import googleLogo from '../../../assets/google.webp'
+import tribunalesBg from '../../../assets/Tribunales.jpeg'
 import './HomePage.css'
 
 function ratingStars(value) {
@@ -28,6 +29,7 @@ function authorFallback(name) {
 function HomePage() {
   const { carouselSlides, reviews, loading, error } = useHomeData()
   const reviewsScrollerRef = useRef(null)
+  const [brokenAvatarMap, setBrokenAvatarMap] = useState({})
   const desktopSlides = carouselSlides.filter((slide) => slide.imgDesktopUrl)
   const mobileSlides = carouselSlides.filter((slide) => slide.imgMobileUrl)
   const hasAnyCarouselSlide = desktopSlides.length > 0 || mobileSlides.length > 0
@@ -42,6 +44,14 @@ function HomePage() {
     container.scrollBy({
       left: direction * (cardWidth + 16),
       behavior: 'smooth',
+    })
+  }
+
+  const markAvatarAsBroken = (reviewId) => {
+    if (!reviewId) return
+    setBrokenAvatarMap((current) => {
+      if (current[reviewId]) return current
+      return { ...current, [reviewId]: true }
     })
   }
 
@@ -62,6 +72,8 @@ function HomePage() {
       : undefined,
   }
 
+
+
   return (
     <main className="home-page">
       <SeoHead
@@ -71,13 +83,19 @@ function HomePage() {
         jsonLd={localBusinessJsonLd}
       />
 
-      <section className="home-carousel" aria-label="Banners principales">
-        {!hasAnyCarouselSlide ? (
-          <div className="home-carousel-empty">
-            {loading ? 'Cargando banners...' : 'Próximamente: banners del estudio.'}
+      {/* HERO + BANNER en bloque conjunto */}
+      <section className="hero-banner-combo">
+        <div className="hero-banner-inner">
+          <div className="hero-content left">
+            <h1 className="hero-title">Abogado Penalista<br /><span>Nicolás Ruades</span></h1>
+            <p className="hero-subtitle">
+              Defensa penal estratégica y asesoramiento profesional en causas complejas.<br />
+              Córdoba, Argentina
+            </p>
+            <a href="#servicios" className="hero-cta-btn">Conocé nuestros servicios</a>
           </div>
-        ) : (
-          <>
+          <div className="hero-banner-carousel right">
+            {/* Carrusel solo desktop, imagen destacada si no hay slides */}
             {desktopSlides.length > 0 ? (
               <div id="homeCarouselDesktop" className="carousel slide desktop-only" data-bs-ride="carousel">
                 <div className="carousel-indicators">
@@ -133,65 +151,69 @@ function HomePage() {
                   </>
                 ) : null}
               </div>
-            ) : null}
-
-            {mobileSlides.length > 0 ? (
-              <div id="homeCarouselMobile" className="carousel slide mobile-only" data-bs-ride="carousel">
-                <div className="carousel-indicators">
-                  {mobileSlides.map((slide, index) => (
-                    <button
-                      key={`mobile-${slide.carousel_id}`}
-                      type="button"
-                      data-bs-target="#homeCarouselMobile"
-                      data-bs-slide-to={index}
-                      className={index === 0 ? 'active' : ''}
-                      aria-current={index === 0 ? 'true' : undefined}
-                      aria-label={`Slide mobile ${index + 1}`}
-                    />
-                  ))}
-                </div>
-
-                <div className="carousel-inner home-carousel-inner">
-                  {mobileSlides.map((slide, index) => (
-                    <article
-                      key={`mobile-item-${slide.carousel_id}`}
-                      className={`carousel-item ${index === 0 ? 'active' : ''}`}
-                    >
-                      <img
-                        src={slide.imgMobileUrl}
-                        className="d-block w-100 home-carousel-image"
-                        alt={`Banner legal mobile ${index + 1}`}
-                        loading={index === 0 ? 'eager' : 'lazy'}
-                      />
-                    </article>
-                  ))}
-                </div>
-
-                {mobileSlides.length > 1 ? (
-                  <>
-                    <button
-                      className="carousel-control-prev"
-                      type="button"
-                      data-bs-target="#homeCarouselMobile"
-                      data-bs-slide="prev"
-                      aria-label="Slide anterior"
-                    >
-                      <span className="carousel-control-prev-icon" aria-hidden="true" />
-                    </button>
-                    <button
-                      className="carousel-control-next"
-                      type="button"
-                      data-bs-target="#homeCarouselMobile"
-                      data-bs-slide="next"
-                      aria-label="Slide siguiente"
-                    >
-                      <span className="carousel-control-next-icon" aria-hidden="true" />
-                    </button>
-                  </>
-                ) : null}
+            ) : (
+              <div className="hero-banner-placeholder">
+                <img src={tribunalesBg} alt="Banner legal" className="home-carousel-image" />
               </div>
-            ) : null}
-          </>
+            )}
+          </div>
+        </div>
+        {/* Carrusel mobile debajo */}
+        {mobileSlides.length > 0 && (
+          <div className="hero-banner-carousel mobile-only">
+            <div id="homeCarouselMobile" className="carousel slide" data-bs-ride="carousel">
+              <div className="carousel-indicators">
+                {mobileSlides.map((slide, index) => (
+                  <button
+                    key={`mobile-${slide.carousel_id}`}
+                    type="button"
+                    data-bs-target="#homeCarouselMobile"
+                    data-bs-slide-to={index}
+                    className={index === 0 ? 'active' : ''}
+                    aria-current={index === 0 ? 'true' : undefined}
+                    aria-label={`Slide mobile ${index + 1}`}
+                  />
+                ))}
+              </div>
+              <div className="carousel-inner home-carousel-inner">
+                {mobileSlides.map((slide, index) => (
+                  <article
+                    key={`mobile-item-${slide.carousel_id}`}
+                    className={`carousel-item ${index === 0 ? 'active' : ''}`}
+                  >
+                    <img
+                      src={slide.imgMobileUrl}
+                      className="d-block w-100 home-carousel-image"
+                      alt={`Banner legal mobile ${index + 1}`}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                    />
+                  </article>
+                ))}
+              </div>
+              {mobileSlides.length > 1 ? (
+                <>
+                  <button
+                    className="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#homeCarouselMobile"
+                    data-bs-slide="prev"
+                    aria-label="Slide anterior"
+                  >
+                    <span className="carousel-control-prev-icon" aria-hidden="true" />
+                  </button>
+                  <button
+                    className="carousel-control-next"
+                    type="button"
+                    data-bs-target="#homeCarouselMobile"
+                    data-bs-slide="next"
+                    aria-label="Slide siguiente"
+                  >
+                    <span className="carousel-control-next-icon" aria-hidden="true" />
+                  </button>
+                </>
+              ) : null}
+            </div>
+          </div>
         )}
       </section>
 
@@ -267,7 +289,14 @@ function HomePage() {
         </div>
       </section>
 
-      <section id="resenas" className="home-section reviews-section" aria-label="Reseñas de Google Maps">
+      <section
+        id="resenas"
+        className="home-section reviews-section reviews-section-bg"
+        aria-label="Reseñas de Google Maps"
+        style={{
+          position: 'relative',
+        }}
+      >
         <div className="home-section-heading">
           <div className="reviews-heading-brand">
                 <h2>Clientes satisfechos respaldan nuestro trabajo</h2>
@@ -298,12 +327,13 @@ function HomePage() {
                 <div className="review-card-content">
                   <header className="review-header-google">
                     <div className="review-author-google">
-                      {review.profile_photo_url ? (
+                      {review.profile_photo_url && !brokenAvatarMap[review.review_id] ? (
                         <img
                           src={review.profile_photo_url}
                           alt={`Foto de perfil de ${review.author_name || 'cliente'}`}
                           className="review-author-avatar"
                           loading="lazy"
+                          onError={() => markAvatarAsBroken(review.review_id)}
                         />
                       ) : (
                         <div className="review-author-avatar review-author-avatar-fallback" aria-hidden="true">

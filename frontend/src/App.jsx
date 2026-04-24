@@ -5,6 +5,8 @@ import AdminLayout from './layouts/AdminLayout'
 import PublicLayout from './layouts/PublicLayout'
 import AdminDashboardPage from './features/admin/pages/AdminDashboardPage'
 import HomePage from './features/home/pages/HomePage'
+import AboutPage from './features/about/pages/AboutPage'
+import NewsPage from './features/news/pages/NewsPage'
 
 function App() {
   return (
@@ -25,6 +27,24 @@ function App() {
             <AdminLayout>
               <AdminDashboardPage />
             </AdminLayout>
+          }
+        />
+
+        <Route
+          path="/nosotros"
+          element={
+            <PublicLayout>
+              <AboutPage />
+            </PublicLayout>
+          }
+        />
+
+        <Route
+          path="/noticias"
+          element={
+            <PublicLayout>
+              <NewsPage />
+            </PublicLayout>
           }
         />
 
