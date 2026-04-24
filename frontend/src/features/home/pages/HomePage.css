@@ -7,6 +7,8 @@ html, body {
   padding: 0;
 }
 
+
+
 /* --- HERO FUSIONADO (PANTALLA COMPLETA) --- */
 .hero-banner-combo.fusion {
   position: relative;
@@ -100,7 +102,7 @@ html, body {
 
 /* --- SECCIONES (QUIÉNES SOMOS, SERVICIOS, ETC) --- */
 .home-section {
-  width: 90%;
+  width: 100%;
   max-width: 1200px;
   margin: 4rem auto;
   padding: 3rem;
@@ -119,6 +121,8 @@ html, body {
   padding: 6rem 0; /* Espaciado generoso arriba y abajo */
   background: transparent; /* Permite que se vea el mármol de fondo */
 }
+
+
 
 /* El Grid que crea las 2 columnas */
 .who-are-we-grid {
@@ -262,27 +266,206 @@ html, body {
   }
 }
 
-/* --- GRID DE SERVICIOS --- */
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
+/* ============================================================
+   NUEVA SECCIÓN SERVICIOS (SCROLL HORIZONTAL)
+============================================================ */
+
+.services-slider-section {
+  width: 100%;
+  position: relative;
+  display: block; /* Asegurate que no sea fixed o absolute */
+  background: transparent !important; /* Forzamos transparencia para ver qué hay atrás */
+  padding: 80px 0;
+  color: white;
 }
 
+.services-slider-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 2rem; /* Margen lateral y padding vertical */
+  min-height: 400px; /* Ajusta el alto mínimo según necesidad */
+}
+/* Flechas personalizadas para slider de servicios */
+.services-navigation {
+  display: flex;            /* Las pone en fila */
+  flex-direction: row;      /* Refuerza que sea horizontal */
+  align-items: center;      /* Las centra verticalmente entre sí */
+  justify-content: flex-start; /* Las mantiene a la izquierda bajo el título */
+  margin-top: 1.5rem;       /* Espacio con el texto de arriba */
+}
+.services-navigation .styled-arrow {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.08);
+  margin: 0 0.5rem;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.services-navigation .styled-arrow:hover {
+  background: #fff2;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.18);
+}
+.services-navigation .styled-arrow svg {
+  display: block;
+}
+
+/* --- COLUMNA IZQUIERDA (FIJA) --- */
+.services-intro {
+  flex: 0 0 350px; /* Ancho fijo para la columna izquierda */
+  position: sticky;
+  top: 120px; /* Se queda pegado al hacer scroll hacia abajo */
+}
+
+.services-title {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.services-title span {
+  display: block;
+  color: #D4AF37;
+}
+
+.services-divider {
+  width: 60px;
+  height: 3px;
+  background-color: #D4AF37;
+  margin-bottom: 1.5rem;
+}
+
+.services-subtitle {
+  color: #D1D5DB;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.swipe-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9CA3AF;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.swipe-indicator .arrow {
+  animation: bounceRight 2s infinite;
+}
+
+@keyframes bounceRight {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+/* --- COLUMNA DERECHA (CARRUSEL) --- */
+.services-track {
+  flex: 1;          /* NUEVO: Le dice que ocupe el resto del ancho disponible */
+  min-width: 0;     /* NUEVO: El "truco" de Flexbox para que permita el scroll interno */
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding: 2rem; /* Espacio para la sombra */
+  
+  /* Efecto imán al deslizar */
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  
+  /* Ocultar barra de scroll en navegadores Webkit (Chrome/Safari) */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.services-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tarjetas Individuales */
 .service-card {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 2rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
-  transition: 0.3s;
+  flex: 0 0 320px; /* Ancho de cada tarjeta */
+  scroll-snap-align: start; /* Punto de anclaje del imán */
+  
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
 }
 
 .service-card:hover {
-  border-color: #D4AF37;
-  background: rgba(212, 175, 55, 0.05);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-5px);
 }
 
+.service-card h3 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.service-card p {
+  color: #9CA3AF;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+  flex-grow: 1; /* Empuja el botón hacia abajo */
+}
+
+/* Botón estilo enlace */
+.service-btn {
+  background: none;
+  border: none;
+  color: #D4AF37;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  transition: opacity 0.2s;
+}
+
+.service-btn:hover {
+  opacity: 0.8;
+}
+
+/* --- RESPONSIVE (MÓVIL) --- */
+@media (max-width: 991px) {
+  .services-slider-container {
+    flex-direction: column; /* Pasa el título arriba y el slider abajo */
+    gap: 2rem;
+  }
+
+  .services-intro {
+    flex: auto;
+    position: static; /* Quita el sticky en móvil */
+  }
+
+  .service-card {
+    flex: 0 0 280px; /* Tarjetas un poco más chicas en celu */
+  }
+}
 /* --- REVIEWS (GOOGLE STYLE) --- */
 .review-card-google {
   min-width: 300px;

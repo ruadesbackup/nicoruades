@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import SeoHead from '../../../shared/seo/SeoHead'
 import { useHomeData } from '../hooks/useHomeData'
 import googleLogo from '../../../assets/google.webp'
@@ -35,6 +35,51 @@ function HomePage() {
   const mobileSlides = carouselSlides.filter((slide) => slide.imgMobileUrl)
   const hasAnyCarouselSlide = desktopSlides.length > 0 || mobileSlides.length > 0
   const canScrollReviews = reviews.length > 4
+  // --- Corrección para sección de servicios ---
+  const scrollRef = useRef(null)
+  // Nuevo: índice del servicio actual
+  const [currentService, setCurrentService] = useState(0)
+  const autoScrollInterval = 3000 // ms
+
+  const scroll = (direction) => {
+    const container = scrollRef.current
+    if (!container) return
+    const card = container.querySelector('.service-card')
+    const cardWidth = card ? card.getBoundingClientRect().width : container.clientWidth / 3
+    let newIndex = currentService
+    if (direction === 'left') {
+      newIndex = (currentService - 1 + listaServicios.length) % listaServicios.length
+    } else {
+      newIndex = (currentService + 1) % listaServicios.length
+    }
+    setCurrentService(newIndex)
+    container.scrollTo({
+      left: newIndex * (cardWidth + 16),
+      behavior: 'smooth',
+    })
+  }
+
+  // Efecto infinito: cuando cambia currentService, si es el último, vuelve al primero automáticamente
+  // useEffect ya está importado arriba
+  useEffect(() => {
+    const container = scrollRef.current
+    if (!container) return
+    const card = container.querySelector('.service-card')
+    const cardWidth = card ? card.getBoundingClientRect().width : container.clientWidth / 3
+    container.scrollTo({
+      left: currentService * (cardWidth + 16),
+      behavior: 'smooth',
+    })
+  }, [currentService])
+
+  // Auto-scroll effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      scroll('right')
+    }, autoScrollInterval)
+    return () => clearInterval(interval)
+    // eslint-disable-next-line
+  }, [currentService])
 
   const scrollReviews = (direction) => {
     const container = reviewsScrollerRef.current
@@ -72,6 +117,14 @@ function HomePage() {
         }
       : undefined,
   }
+
+  const listaServicios = [
+  { id: 1, titulo: "Penal", desc: "Narcotráfico y causas complejas." },
+  { id: 2, titulo: "Laboral", desc: "Conflictos y protección del trabajador." },
+  { id: 3, titulo: "ART", desc: "Accidentes e incapacidades laborales." },
+  { id: 4, titulo: "Civil", desc: "Controversias y reclamos patrimoniales." },
+  { id: 5, titulo: "Familia", desc: "Divorcios y medidas urgentes." },
+];
 
 
 
@@ -247,51 +300,45 @@ function HomePage() {
   </div>
 </section>
 
-      <section id="servicios" className="home-section services-section" aria-label="Servicios que brindamos">
-        <div className="home-section-heading">
-          <h2>Servicios que brindamos</h2>
-          <p>
-            Asesoramiento y defensa en áreas clave del derecho, con seguimiento profesional y estrategia personalizada.
-          </p>
+      {/* --- SECCIÓN SERVICIOS (SCROLL HORIZONTAL) --- */}
+<section className="services-slider-section">
+  <div className="services-slider-container">
+    
+    {/* Reutilizamos la idea de tu 'hero-content' para el título fijo */}
+    <div className="services-intro">
+      <h2 className="services-title">Servicios que <span>brindamos</span></h2>
+      <div className="services-divider"></div>
+      
+      {/* Botones: Reutilizamos la lógica de tus 'carousel-control' pero con tus funciones */}
+      <div className="services-navigation">
+        <button className="nav-btn-custom styled-arrow left" onClick={() => scroll('left')} aria-label="Servicio anterior">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="15" stroke="#C9A14A" strokeWidth="2" fill="#fff" />
+            <path d="M19 10L13 16L19 22" stroke="#C9A14A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <button className="nav-btn-custom styled-arrow right" onClick={() => scroll('right')} aria-label="Servicio siguiente">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="15" stroke="#C9A14A" strokeWidth="2" fill="#fff" />
+            <path d="M13 10L19 16L13 22" stroke="#C9A14A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    {/* El track donde se hace el .map() igual que hiciste con el Banner */}
+    <div className="services-track" ref={scrollRef}>
+      {listaServicios.map((servicio) => (
+        <div key={servicio.id} className="service-card">
+          <h3>{servicio.titulo}</h3>
+          <p>{servicio.desc}</p>
+          <button className="service-btn">Saber más →</button>
         </div>
-
-        <div className="services-grid">
-          <article className="service-card">
-            <h3>Penal</h3>
-            <p>Narcotráfico, asociaciones ilícitas y defensa penal integral en causas complejas.</p>
-          </article>
-
-          <article className="service-card">
-            <h3>Laboral</h3>
-            <p>Asistencia en conflictos laborales, reclamos y protección de derechos del trabajador.</p>
-          </article>
-
-          <article className="service-card">
-            <h3>ART</h3>
-            <p>Gestión de accidentes laborales, incapacidades y reclamos ante aseguradoras.</p>
-          </article>
-
-          <article className="service-card">
-            <h3>Civil</h3>
-            <p>Soluciones en controversias civiles, reclamos patrimoniales y asesoramiento legal.</p>
-          </article>
-
-          <article className="service-card">
-            <h3>Derecho de familia</h3>
-            <p>Divorcios, alimentos, cuidado personal, régimen de comunicación y medidas urgentes.</p>
-          </article>
-
-          <article className="service-card">
-            <h3>Accidente de tránsito</h3>
-            <p>Reclamos por daños y perjuicios, lesiones y seguimiento completo del caso.</p>
-          </article>
-
-          <article className="service-card">
-            <h3>Ejecuciones</h3>
-            <p>Defensa y gestión en procesos ejecutivos, cobros judiciales y embargos.</p>
-          </article>
-        </div>
-      </section>
+      ))}
+    </div>
+    
+  </div>
+</section>
 
       <section
         id="resenas"
