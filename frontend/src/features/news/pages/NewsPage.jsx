@@ -1,6 +1,8 @@
+
 import { useEffect, useState } from 'react'
 import SeoHead from '../../../shared/seo/SeoHead'
 import { apiClient } from '../../../shared/services/apiClient'
+import NewsCard from '../components/NewsCard'
 import './NewsPage.css'
 
 function resolveMediaUrl(pathname) {
@@ -50,35 +52,26 @@ export default function NewsPage() {
           itemListElement: newsListJsonLd,
         }}
       />
-      <section className="news-hero">
-        <h1>Noticias y Novedades</h1>
-        <p className="news-lead">Actualidad jurídica, novedades del estudio y artículos de interés.</p>
-      </section>
-      <section className="news-list" aria-label="Listado de noticias">
+      <section className="news-section">
+        <h1 className="news-section-title">Últimas Noticias</h1>
+        <p className="news-section-subtitle">
+          Enterate de las novedades legales, casos y análisis de nuestro estudio.
+        </p>
         {loading && <div className="news-loading">Cargando noticias...</div>}
         {error && <div className="news-error">{error}</div>}
         {!loading && !error && news.length === 0 && <div className="news-empty">No hay noticias disponibles.</div>}
         {!loading && !error && news.length > 0 && (
-          <ul className="news-cards">
+          <div className="news-cards-grid">
             {news.map((item) => (
-              <li key={item.news_id} className="news-card">
-                {item.img_desktop && (
-                  <img
-                    src={resolveMediaUrl(item.img_desktop)}
-                    alt={item.title}
-                    className="news-card-img"
-                    loading="lazy"
-                  />
-                )}
-                <div className="news-card-content">
-                  <h2 className="news-card-title">{item.title}</h2>
-                  <p className="news-card-date">{formatDate(item.created_at)}</p>
-                  <p className="news-card-desc">{item.content?.slice(0, 160)}...</p>
-                  {/* Si se implementa detalle, usar <Link> */}
-                </div>
-              </li>
+              <NewsCard
+                key={item.news_id}
+                image={item.img_desktop ? resolveMediaUrl(item.img_desktop) : ''}
+                title={item.title}
+                preview={item.content?.slice(0, 160) + (item.content?.length > 160 ? '...' : '')}
+                link={`/noticias/${item.slug}`}
+              />
             ))}
-          </ul>
+          </div>
         )}
       </section>
     </main>

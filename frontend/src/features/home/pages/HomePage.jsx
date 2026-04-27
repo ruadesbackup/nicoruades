@@ -4,7 +4,7 @@ import { useHomeData } from '../hooks/useHomeData'
 import googleLogo from '../../../assets/google.webp'
 import tribunalesBg from '../../../assets/Tribunales.jpeg'
 import './HomePage.css'
-import nicolasRuadesImg from '../../../assets/perfil/NicolasRuades.jpg'
+import nicolasRuadesImg from '../../../assets/perfil/NicolasRuadesHome1.jpg'
 
 function ratingStars(value) {
   const safe = Math.max(1, Math.min(5, Number(value) || 0))

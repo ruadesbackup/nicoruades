@@ -53,9 +53,32 @@ function PublicLayout({ children }) {
         {children}
       </div>
 
-      <footer className="public-footer">
-        <div className="public-footer-inner public-marquina-surface">
-          <p>Estudio Jurídico Penal · Atención profesional y estratégica.</p>
+      <footer className="public-footer glass">
+        <div className="public-footer-inner">
+          <div className="footer-brand">
+            <img src={logoImg} alt="Logo Estudio de Abogacía ANR & ASOC" className="footer-logo-img" height={36} />
+            <div className="footer-brand-text">
+              <span className="footer-brand-title">ESTUDIO DE ABOGACIA</span>
+              <span className="footer-brand-subtitle">ANR & ASOC</span>
+            </div>
+          </div>
+          
+          <nav className="footer-nav" aria-label="Navegación del pie">
+            <NavLink to="/" className="footer-nav-link">
+              Inicio
+            </NavLink>
+            <NavLink to="/noticias" className="footer-nav-link">
+              Noticias
+            </NavLink>
+            <NavLink to="/nosotros" className="footer-nav-link">
+              Nosotros
+            </NavLink>
+          </nav>
+          
+          <div className="footer-contact">
+            <p className="footer-contact-text">Estudio Jurídico Penal · Atención profesional y estratégica.</p>
+            <p className="footer-copyright">© {new Date().getFullYear()} Estudio Jurídico Nicolas Ruades. Todos los derechos reservados.</p>
+          </div>
         </div>
       </footer>
     </div>

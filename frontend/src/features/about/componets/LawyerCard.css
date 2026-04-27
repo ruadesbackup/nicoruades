@@ -1,0 +1,49 @@
+.lawyer-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,161,74,0.18);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  min-width: 280px;
+  max-width: 340px;
+  padding: 1.5rem 1rem 1.2rem 1rem;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.lawyer-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(201,161,74,0.18);
+}
+
+.lawyer-photo {
+  width: 100%;
+  aspect-ratio: 4/5;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid rgba(201,161,74,0.18);
+  margin-bottom: 1rem;
+}
+
+.lawyer-name {
+  color: #C9A14A;
+  font-size: 1.18rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem 0;
+}
+
+.lawyer-role {
+  color: #99b5dc;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.lawyer-desc {
+  color: #f3f4f6;
+  font-size: 1rem;
+  margin: 0;
+  line-height: 1.5;
+}

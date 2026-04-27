@@ -1,9 +1,12 @@
 import SeoHead from '../../../shared/seo/SeoHead'
-import aboutSeoImg from '../../../assets/perfil/NicolasRuades.jpg'
-import nicolasRuadesImg from '../../../assets/perfil/NicolasRuades.jpg'
-import yaninaCardozoImg from '../../../assets/perfil/YaninaCardozo.jpg'
-import juanCenturionImg from '../../../assets/perfil/JuanCenturion.jpg'
+import groupImg from '../../../assets/perfil/GrupoEstudio.jpeg' // Cambia por tu imagen grupal
+import LawyerCard from '../componets/LawyerCard'
+import nicolasRuadesImg from '../../../assets/perfil/NicolasRuades.jpeg'
+import yaninaCardozoImg from '../../../assets/perfil/YaninaCardozo.jpeg'
 import danielaMarquezImg from '../../../assets/perfil/DanielaMarquez.jpg'
+import danielaMoralesImg from '../../../assets/perfil/DanielaMorales12.jpg'
+import azulSellaImg from '../../../assets/perfil/AzulSella1.jpeg'
+import lautaroVergaraImg from '../../../assets/perfil/LautaroVergara.jpeg'
 import './AboutPage.css'
 
 const LAWYERS = [
@@ -14,7 +17,25 @@ const LAWYERS = [
     image: nicolasRuadesImg,
     imageAlt: 'Retrato de Nicolas Ruades, abogado penalista',
     description:
-      'Lidera el estudio con foco en estrategia penal, defensa tecnica y acompanamiento constante en cada etapa del proceso judicial.',
+      'Tel: 351 6157496 | Email: ab.ruades@gmail.com',
+  },
+   {
+    id: 'daniela-morales-leanza',
+    name: 'Daniela Morales Leanza',
+    role: 'Abogada Asociada',
+    image: danielaMoralesImg,
+    imageAlt: 'Retrato de Daniela Morales Leanza, abogada asociada',
+    description:
+      'Tel: 351 7043998 | Email: moralesleanzadaniela@gmail.com',
+  },
+   {
+    id: 'azul-sella',
+    name: 'Azul Sella',
+    role: 'Abogada Asociada',
+    image: azulSellaImg,
+    imageAlt: 'Retrato de Azul Sella, abogada asociada',
+    description:
+      'Tel. 351 7043025 | Email: dra.azulsella@gmail.com',
   },
   {
     id: 'yanina-cardozo',
@@ -23,25 +44,16 @@ const LAWYERS = [
     image: yaninaCardozoImg,
     imageAlt: 'Retrato de Yanina del Milagro Cardozo, abogada asociada',
     description:
-      'Aporta una mirada integral del caso, con trabajo coordinado en investigacion, preparacion de audiencias y seguimiento de clientes.',
+      'Tel: 351 3171160 | Email: milagrosymc37@gmail.com',
   },
-  {
-    id: 'juan-centurion',
-    name: 'Juan Domingo Centurion',
+   {
+    id: 'lautaro-vergara',
+    name: 'Lautaro Vergara',
     role: 'Abogado Asociado',
-    image: juanCenturionImg,
-    imageAlt: 'Retrato de Juan Domingo Centurion, abogado asociado',
+    image: lautaroVergaraImg,
+    imageAlt: 'Retrato de Lautaro Vergara, abogado asociado',
     description:
-      'Especializado en analisis probatorio y construccion de argumentos defensivos claros, solidos y orientados a resultados.',
-  },
-  {
-    id: 'daniela-marquez',
-    name: 'Daniela Marquez Villaseca',
-    role: 'Abogada Asociada',
-    image: danielaMarquezImg,
-    imageAlt: 'Retrato de Daniela Marquez Villaseca, abogada asociada',
-    description:
-      'Trabaja en el acompanamiento personalizado de cada consulta, priorizando claridad juridica, contencion y resolucion eficiente.',
+      ' Tel. 2994 27-0928 | Email: lauty_lr@hotmail.com',
   },
 ]
 
@@ -64,35 +76,29 @@ function AboutPage() {
     })),
   }
 
-  return (
+return (
     <main className="about-page">
       <SeoHead
         title="Nosotros | Estudio Juridico Nicolas Ruades"
         description="Conoce al equipo de abogados del Estudio Juridico Nicolas Ruades y su enfoque profesional en defensa penal y asesoramiento legal."
         canonicalPath="/nosotros"
-        image={aboutSeoImg}
+        image={groupImg}
         jsonLd={legalServiceJsonLd}
       />
 
-      <section className="about-hero" aria-labelledby="about-title">
-        <p className="about-kicker">Estudio Juridico</p>
-        <h1 id="about-title">Nosotros</h1>
-        <p className="about-lead">
-          Somos un equipo legal orientado a la defensa estrategica, la cercania con cada cliente y la construccion de soluciones juridicas claras.
-        </p>
+      <section className="about-hero-img" aria-label="Equipo de abogados">
+        <img src={groupImg} alt="Equipo de abogados del Estudio Jurídico" className="about-group-photo" />
+        <div className="about-hero-overlay">
+          <h1 className="about-hero-title">Un equipo nacional de abogados experimentados</h1>
+          <p className="about-hero-lead">
+            Nuestro estudio está definido por la experiencia, la pasión y la determinación de nuestro equipo. Conocé a los profesionales que te acompañarán en cada etapa.
+          </p>
+        </div>
       </section>
 
-      <section className="about-team" aria-label="Equipo de abogados">
+      <section className="about-team-grid" aria-label="Abogados del estudio">
         {LAWYERS.map((lawyer) => (
-          <article key={lawyer.id} className="lawyer-card">
-            <img src={lawyer.image} alt={lawyer.imageAlt} className="lawyer-photo" loading="lazy" />
-
-            <div className="lawyer-content">
-              <h2>{lawyer.name}</h2>
-              <p className="lawyer-role">{lawyer.role}</p>
-              <p>{lawyer.description}</p>
-            </div>
-          </article>
+          <LawyerCard key={lawyer.id} {...lawyer} />
         ))}
       </section>
     </main>
