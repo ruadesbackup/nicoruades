@@ -29,69 +29,114 @@ function authorFallback(name) {
 
 function HomePage() {
   const { carouselSlides, reviews, loading, error } = useHomeData()
-  const reviewsScrollerRef = useRef(null)
   const [brokenAvatarMap, setBrokenAvatarMap] = useState({})
-  const desktopSlides = carouselSlides.filter((slide) => slide.imgDesktopUrl)
-  const mobileSlides = carouselSlides.filter((slide) => slide.imgMobileUrl)
-  const hasAnyCarouselSlide = desktopSlides.length > 0 || mobileSlides.length > 0
-  const canScrollReviews = reviews.length > 4
-  // --- Corrección para sección de servicios ---
-  const scrollRef = useRef(null)
-  // Nuevo: índice del servicio actual
+  
+  // 1. REFERENCIAS DIFERENTES (Vital para que no se pise el scroll)
+  const reviewsScrollerRef = useRef(null)
+  const servicesScrollerRef = useRef(null) // <--- Cambiamos nombre por claridad
+  
+  // 2. ESTADOS
   const [currentService, setCurrentService] = useState(0)
-  const autoScrollInterval = 3000 // ms
+  const [currentReview, setCurrentReview] = useState(0)
+  const autoScrollInterval = 3000
 
-  const scroll = (direction) => {
-    const container = scrollRef.current
+  // 3. LISTA DE SERVICIOS (debe estar antes de los useEffect que la usan)
+  const listaServicios = [
+    { id: 1, titulo: "Penal", desc: "Narcotráfico y causas complejas." },
+    { id: 2, titulo: "Laboral", desc: "Conflictos y protección del trabajador." },
+    { id: 3, titulo: "ART", desc: "Accidentes e incapacidades laborales." },
+    { id: 4, titulo: "Civil", desc: "Controversias y reclamos patrimoniales." },
+    { id: 5, titulo: "Familia", desc: "Divorcios y medidas urgentes." },
+  ];
+
+  // 4. LÓGICA DE SERVICIOS (Corregida)
+  const scrollServices = (direction) => {
+    const container = servicesScrollerRef.current
     if (!container) return
+    
     const card = container.querySelector('.service-card')
-    const cardWidth = card ? card.getBoundingClientRect().width : container.clientWidth / 3
-    let newIndex = currentService
+    const gap = 16 // El gap que tenés en el CSS
+    const cardWidth = card ? card.getBoundingClientRect().width : 300
+    
+    let newIndex
     if (direction === 'left') {
       newIndex = (currentService - 1 + listaServicios.length) % listaServicios.length
     } else {
       newIndex = (currentService + 1) % listaServicios.length
     }
+    
     setCurrentService(newIndex)
     container.scrollTo({
-      left: newIndex * (cardWidth + 16),
+      left: newIndex * (cardWidth + gap),
       behavior: 'smooth',
     })
   }
 
-  // Efecto infinito: cuando cambia currentService, si es el último, vuelve al primero automáticamente
-  // useEffect ya está importado arriba
+  // 5. AUTO-SCROLL (Separado para evitar el bucle infinito)
   useEffect(() => {
-    const container = scrollRef.current
+    const timer = setInterval(() => {
+      // Usamos la lógica directamente aquí para evitar dependencias circulares
+      setCurrentService((prev) => (prev + 1) % listaServicios.length)
+    }, autoScrollInterval)
+    
+    return () => clearInterval(timer)
+  }, [listaServicios.length]) // Solo depende del largo de la lista
+
+  // 6. SINCRONIZACIÓN DEL SCROLL
+  useEffect(() => {
+    const container = servicesScrollerRef.current
     if (!container) return
     const card = container.querySelector('.service-card')
-    const cardWidth = card ? card.getBoundingClientRect().width : container.clientWidth / 3
+    const gap = 16
+    const cardWidth = card ? card.getBoundingClientRect().width : 300
+    
     container.scrollTo({
-      left: currentService * (cardWidth + 16),
+      left: currentService * (cardWidth + gap),
       behavior: 'smooth',
     })
   }, [currentService])
 
-  // Auto-scroll effect
+  // 6. AUTO-SCROLL DE REVIEWS
   useEffect(() => {
-    const interval = setInterval(() => {
-      scroll('right')
+    if (!reviews || reviews.length === 0) return
+    
+    const timer = setInterval(() => {
+      setCurrentReview((prev) => (prev + 1) % reviews.length)
     }, autoScrollInterval)
-    return () => clearInterval(interval)
-    // eslint-disable-next-line
-  }, [currentService])
+    
+    return () => clearInterval(timer)
+  }, [reviews.length])
 
+  // 7. SINCRONIZACIÓN DEL SCROLL DE REVIEWS
+  useEffect(() => {
+    const container = reviewsScrollerRef.current
+    if (!container) return
+    
+    const cards = container.querySelectorAll('.testimonial-card')
+    if (cards.length === 0) return
+    
+    const cardWidth = cards[0].getBoundingClientRect().width
+    const gap = 24
+    
+    container.scrollTo({
+      left: currentReview * (cardWidth + gap),
+      behavior: 'smooth',
+    })
+  }, [currentReview])
+
+  // 8. LÓGICA DE REVIEWS (Se mantiene igual, independiente)
   const scrollReviews = (direction) => {
     const container = reviewsScrollerRef.current
     if (!container) return
-
-    const firstCard = container.querySelector('.review-card-google')
-    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : container.clientWidth / 4
+    const firstCard = container.querySelector('.testimonial-card') // Ajustado al nombre de tu clase
+    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320
     container.scrollBy({
-      left: direction * (cardWidth + 16),
+      left: direction * (cardWidth + 24), // 24 es el gap de 1.5rem de tu CSS
       behavior: 'smooth',
     })
   }
+
+  // ... (markAvatarAsBroken y jsonLd se mantienen igual)
 
   const markAvatarAsBroken = (reviewId) => {
     if (!reviewId) return
@@ -118,15 +163,6 @@ function HomePage() {
       : undefined,
   }
 
-  const listaServicios = [
-  { id: 1, titulo: "Penal", desc: "Narcotráfico y causas complejas." },
-  { id: 2, titulo: "Laboral", desc: "Conflictos y protección del trabajador." },
-  { id: 3, titulo: "ART", desc: "Accidentes e incapacidades laborales." },
-  { id: 4, titulo: "Civil", desc: "Controversias y reclamos patrimoniales." },
-  { id: 5, titulo: "Familia", desc: "Divorcios y medidas urgentes." },
-];
-
-
 
   return (
     <main className="home-page">
@@ -141,10 +177,10 @@ function HomePage() {
       <section className="hero-banner-combo fusion">
         {/* Imagen/carrusel de fondo */}
         <div className="hero-banner-bg">
-          {desktopSlides.length > 0 ? (
+          {carouselSlides.length > 0 ? (
             <div id="homeCarouselDesktop" className="carousel slide desktop-only" data-bs-ride="carousel">
               <div className="carousel-inner home-carousel-inner">
-                {desktopSlides.map((slide, index) => (
+                {carouselSlides.map((slide, index) => (
                   <article
                     key={`desktop-item-${slide.carousel_id}`}
                     className={`carousel-item ${index === 0 ? 'active' : ''}`}
@@ -159,7 +195,7 @@ function HomePage() {
                 ))}
               </div>
               {/* Opcional: controles de carrusel si hay más de uno */}
-              {desktopSlides.length > 1 ? (
+              {carouselSlides.length > 1 ? (
                 <>
                   <button
                     className="carousel-control-prev"
@@ -200,11 +236,11 @@ function HomePage() {
           <a href="#servicios" className="hero-cta-btn">Conocé nuestros servicios</a>
         </div>
         {/* Carrusel mobile debajo */}
-        {mobileSlides.length > 0 && (
+        {carouselSlides.length > 0 && (
           <div className="hero-banner-carousel mobile-only">
             <div id="homeCarouselMobile" className="carousel slide" data-bs-ride="carousel">
               <div className="carousel-indicators">
-                {mobileSlides.map((slide, index) => (
+                {carouselSlides.map((slide, index) => (
                   <button
                     key={`mobile-${slide.carousel_id}`}
                     type="button"
@@ -217,7 +253,7 @@ function HomePage() {
                 ))}
               </div>
               <div className="carousel-inner home-carousel-inner">
-                {mobileSlides.map((slide, index) => (
+                {carouselSlides.map((slide, index) => (
                   <article
                     key={`mobile-item-${slide.carousel_id}`}
                     className={`carousel-item ${index === 0 ? 'active' : ''}`}
@@ -231,7 +267,7 @@ function HomePage() {
                   </article>
                 ))}
               </div>
-              {mobileSlides.length > 1 ? (
+              {carouselSlides.length > 1 ? (
                 <>
                   <button
                     className="carousel-control-prev"
@@ -311,13 +347,13 @@ function HomePage() {
       
       {/* Botones: Reutilizamos la lógica de tus 'carousel-control' pero con tus funciones */}
       <div className="services-navigation">
-        <button className="nav-btn-custom styled-arrow left" onClick={() => scroll('left')} aria-label="Servicio anterior">
+        <button className="nav-btn-custom styled-arrow left" onClick={() => scrollServices('left')} aria-label="Servicio anterior">
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="16" cy="16" r="15" stroke="#C9A14A" strokeWidth="2" fill="#fff" />
             <path d="M19 10L13 16L19 22" stroke="#C9A14A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <button className="nav-btn-custom styled-arrow right" onClick={() => scroll('right')} aria-label="Servicio siguiente">
+        <button className="nav-btn-custom styled-arrow right" onClick={() => scrollServices('right')} aria-label="Servicio siguiente">
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="16" cy="16" r="15" stroke="#C9A14A" strokeWidth="2" fill="#fff" />
             <path d="M13 10L19 16L13 22" stroke="#C9A14A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -327,7 +363,7 @@ function HomePage() {
     </div>
 
     {/* El track donde se hace el .map() igual que hiciste con el Banner */}
-    <div className="services-track" ref={scrollRef}>
+    <div className="services-track" ref={servicesScrollerRef}>
       {listaServicios.map((servicio) => (
         <div key={servicio.id} className="service-card">
           <h3>{servicio.titulo}</h3>
@@ -344,8 +380,8 @@ function HomePage() {
       <section className="home-section testimonials-section">
         <div className="testimonials-grid">
           {/* COLUMNA IZQUIERDA: TARJETAS DE RESEÑAS */}
-          <div className="testimonials-cards" ref={scrollRef}>
-            {reviews.map((review, index) => (
+          <div className="testimonials-cards" ref={reviewsScrollerRef}>
+            {reviews?.map((review, index) => (
                 <div key={index} className="testimonial-card">
                   {/* 1. NOMBRE ARRIBA */}
                   <p className="testimonial-author-top">{review.author_name}</p>

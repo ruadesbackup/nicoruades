@@ -535,7 +535,7 @@ html, body {
 
 /* TARJETA INDIVIDUAL */
 .testimonial-card {
-  flex: 0 0 320px;
+  flex: 0 0 550px;
   scroll-snap-align: center;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
