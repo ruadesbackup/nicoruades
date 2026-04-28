@@ -1,32 +1,11 @@
-/* Mostrar solo en desktop o mobile */
-.desktop-only { display: block; }
-.mobile-only { display: none; }
-
-@media (max-width: 991px) {
-  .desktop-only { display: none !important; }
-  .mobile-only { display: block !important; }
-}
-
-@media (min-width: 992px) {
-  .hero-banner-carousel { display: none !important; }
-}
-
-/* Ajuste para evitar solapamiento y asegurar responsividad en hero-banner-carousel */
-.hero-banner-carousel {
-  margin-top: 0;
-  width: 100%;
-  z-index: 2;
-}
 /* --- VARIABLES Y RESET GLOBAL --- */
 html, body {
-  overflow-x: hidden; /* Evita el desplazamiento horizontal rebelde */
-  background-color: #111; /* Fondo oscuro por defecto */
+  overflow-x: hidden;
+  background-color: #111;
   color: #F3F4F6;
   margin: 0;
   padding: 0;
 }
-
-
 
 /* --- HERO FUSIONADO (PANTALLA COMPLETA) --- */
 .hero-banner-combo.fusion {
@@ -119,6 +98,29 @@ html, body {
   transform: translateY(-2px);
 }
 
+/* --- MEDIA QUERIES PARA MOBILE --- */
+@media (max-width: 767px) {
+  /* Ocultar imagen de fondo en mobile */
+  .hero-banner-bg {
+    display: none !important;
+  }
+  
+  /* Contenido ocupa 100% y centrado en mobile */
+  .hero-content.left.fusion {
+    width: 96%;
+    max-width: 420px;
+    margin: 2.5rem 2%;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 320px;
+    box-sizing: border-box;
+  }
+}
+
 /* --- SECCIONES (QUIÉNES SOMOS, SERVICIOS, ETC) --- */
 .home-section {
   width: 100%;
@@ -168,7 +170,7 @@ html, body {
 /* La Imagen Principal */
 .who-image {
   width: 100%;
-  height: auto;
+  height: 600px;
   border-radius: 40px; /* Bordes MUY redondeados y elegantes */
   border: 1px solid rgba(214, 175, 55, 0.2); /* Borde dorado casi invisible */
   box-shadow: 0 20px 40px rgba(0,0,0,0.5); /* Sombra para profundidad */

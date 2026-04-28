@@ -56,3 +56,118 @@
   justify-content: center;
   margin-top: 2.5rem;
 }
+
+/* Contenedor de los botones de contacto */
+.contact-actions {
+  display: flex;
+  flex-direction: column; /* Apila WhatsApp arriba y Email abajo */
+  gap: 12px;              /* Espacio entre botones */
+  width: 100%;
+  margin-top: 15px;
+}
+
+/* Estilo para los enlaces (botones) */
+.contact-actions a {
+  display: block;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  
+  /* CLAVE: Evita que el texto rompa la tarjeta */
+  white-space: normal;    /* Permite que el texto salte de línea */
+  word-break: break-all;  /* Rompe el mail si es muy largo (ej. moralesleanzadaniela@...) */
+  text-align: center;
+}
+
+/* Colores específicos para que se vean como botones */
+.btn-whatsapp {
+  background-color: rgba(37, 211, 102, 0.1); /* Verde suave de fondo */
+  border: 1px solid #25D366;
+  color: #25D366 !important;
+}
+
+.btn-email {
+  background-color: rgba(212, 175, 55, 0.1); /* Dorado suave de fondo */
+  border: 1px solid #D4AF37;
+  color: #D4AF37 !important;
+}
+
+/* Hover effects */
+.contact-actions a:hover {
+  filter: brightness(1.2);
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   ESTILOS DE LA TARJETA (LAWYER CARD)
+   ========================================= */
+
+.lawyer-card {
+  background-color: #0d0d0d; /* Fondo bien oscuro para resaltar la foto */
+  border: 1px solid rgba(212, 175, 55, 0.2); /* Borde dorado muy sutil */
+  border-radius: 16px;
+  padding: 16px; /* Espacio interno para que la foto no toque el borde */
+  width: 100%;
+  max-width: 320px; /* Ancho fijo para mantener la proporción de la imagen original */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box; /* Clave: evita que el padding deforme el ancho */
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+/* Efecto hover elegante cuando pasás el mouse */
+.lawyer-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(212, 175, 55, 0.6);
+}
+
+/* =========================================
+   IMAGEN DEL ABOGADO
+   ========================================= */
+
+.lawyer-card img {
+  width: 100%;
+  height: 320px; /* Alto fijo para que todas las fotos queden alineadas */
+  object-fit: cover; /* Recorta la foto proporcionalmente sin aplastarla */
+  object-position: top; /* Enfoca la cara de la persona */
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+/* =========================================
+   TIPOGRAFÍA DE LA TARJETA
+   ========================================= */
+
+.lawyer-card h3 {
+  color: #D4AF37; /* Dorado característico */
+  font-size: 1.3rem;
+  margin: 0 0 4px 0;
+  text-align: center;
+}
+
+.lawyer-card p {
+  color: #8da4c4; /* Ese tono azul/grisáceo que usaste para el puesto */
+  font-size: 0.95rem;
+  margin: 0 0 10px 0;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* =========================================
+   RESPONSIVE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+  .about-team-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .lawyer-card {
+    max-width: 100%; /* En celular ocupa todo el ancho disponible */
+    margin-bottom: 1rem;
+  }
+}

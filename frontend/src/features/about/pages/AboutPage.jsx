@@ -16,26 +16,32 @@ const LAWYERS = [
     role: 'Abogado Penalista',
     image: nicolasRuadesImg,
     imageAlt: 'Retrato de Nicolas Ruades, abogado penalista',
-    description:
-      'Tel: 351 6157496 | Email: ab.ruades@gmail.com',
+    phone: '351 6157496',
+    email: 'ab.ruades@gmail.com',
+    whatsappLink: 'https://wa.me/5493516157496',
+    mailtoLink: 'mailto:ab.ruades@gmail.com',
   },
-   {
+  {
     id: 'daniela-morales-leanza',
     name: 'Daniela Morales Leanza',
     role: 'Abogada Asociada',
     image: danielaMoralesImg,
     imageAlt: 'Retrato de Daniela Morales Leanza, abogada asociada',
-    description:
-      'Tel: 351 7043998 | Email: moralesleanzadaniela@gmail.com',
+    phone: '351 7043998',
+    email: 'moralesleanzadaniela@gmail.com',
+    whatsappLink: 'https://wa.me/5493517043998',
+    mailtoLink: 'mailto:moralesleanzadaniela@gmail.com',
   },
-   {
+  {
     id: 'azul-sella',
     name: 'Azul Sella',
     role: 'Abogada Asociada',
     image: azulSellaImg,
     imageAlt: 'Retrato de Azul Sella, abogada asociada',
-    description:
-      'Tel. 351 7043025 | Email: dra.azulsella@gmail.com',
+    phone: '351 7043025',
+    email: 'dra.azulsella@gmail.com',
+    whatsappLink: 'https://wa.me/5493517043025',
+    mailtoLink: 'mailto:dra.azulsella@gmail.com',
   },
   {
     id: 'yanina-cardozo',
@@ -43,19 +49,23 @@ const LAWYERS = [
     role: 'Abogada Asociada',
     image: yaninaCardozoImg,
     imageAlt: 'Retrato de Yanina del Milagro Cardozo, abogada asociada',
-    description:
-      'Tel: 351 3171160 | Email: milagrosymc37@gmail.com',
+    phone: '351 3171160',
+    email: 'milagrosymc37@gmail.com',
+    whatsappLink: 'https://wa.me/5493513171160',
+    mailtoLink: 'mailto:milagrosymc37@gmail.com',
   },
-   {
+  {
     id: 'lautaro-vergara',
     name: 'Lautaro Vergara',
     role: 'Abogado Asociado',
     image: lautaroVergaraImg,
     imageAlt: 'Retrato de Lautaro Vergara, abogado asociado',
-    description:
-      ' Tel. 2994 27-0928 | Email: lauty_lr@hotmail.com',
+    phone: '299 4270928',
+    email: 'lauty_lr@hotmail.com',
+    whatsappLink: 'https://wa.me/5492994270928',
+    mailtoLink: 'mailto:lauty_lr@hotmail.com',
   },
-]
+];
 
 function AboutPage() {
   const legalServiceJsonLd = {
@@ -97,9 +107,33 @@ return (
       </section>
 
       <section className="about-team-grid" aria-label="Abogados del estudio">
-        {LAWYERS.map((lawyer) => (
-          <LawyerCard key={lawyer.id} {...lawyer} />
-        ))}
+       {LAWYERS.map((lawyer) => (
+  <div key={lawyer.id} className="lawyer-card">
+    <img src={lawyer.image} alt={lawyer.imageAlt} />
+    <h3>{lawyer.name}</h3>
+    <p>{lawyer.role}</p>
+    
+    <div className="contact-actions">
+      {/* Enlace a WhatsApp */}
+      <a 
+        href={lawyer.whatsappLink} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="btn-whatsapp"
+      >
+        WhatsApp: {lawyer.phone}
+      </a>
+
+      {/* Enlace a Email */}
+      <a 
+        href={lawyer.mailtoLink} 
+        className="btn-email"
+      >
+        {lawyer.email}
+      </a>
+    </div>
+  </div>
+))}
       </section>
     </main>
   )
