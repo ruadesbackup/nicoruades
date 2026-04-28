@@ -87,7 +87,7 @@ function AboutPage() {
   }
 
 return (
-    <main className="about-page">
+    <main  className="about-page">
       <SeoHead
         title="Nosotros | Estudio Juridico Nicolas Ruades"
         description="Conoce al equipo de abogados del Estudio Juridico Nicolas Ruades y su enfoque profesional en defensa penal y asesoramiento legal."

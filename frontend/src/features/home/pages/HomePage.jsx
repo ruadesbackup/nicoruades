@@ -5,6 +5,7 @@ import googleLogo from '../../../assets/google.webp'
 import tribunalesBg from '../../../assets/Tribunales.jpeg'
 import './HomePage.css'
 import nicolasRuadesImg from '../../../assets/perfil/NicolasRuadesHome1.jpg'
+import { Link } from 'react-router-dom';
 
 function ratingStars(value) {
   const safe = Math.max(1, Math.min(5, Number(value) || 0))
@@ -280,7 +281,7 @@ function HomePage() {
 </section>
 
       {/* --- SECCIÓN SERVICIOS (SCROLL HORIZONTAL) --- */}
-<section className="services-slider-section">
+<section id="servicios" className="services-slider-section">
   <div className="services-slider-container">
     
     {/* Reutilizamos la idea de tu 'hero-content' para el título fijo */}
@@ -306,15 +307,23 @@ function HomePage() {
     </div>
 
     {/* El track donde se hace el .map() igual que hiciste con el Banner */}
-    <div className="services-track" ref={servicesScrollerRef}>
-      {listaServicios.map((servicio) => (
-        <div key={servicio.id} className="service-card">
-          <h3>{servicio.titulo}</h3>
-          <p>{servicio.desc}</p>
-          <button className="service-btn">Saber más →</button>
-        </div>
-      ))}
+  <div className="services-track" ref={servicesScrollerRef}>
+  {listaServicios.map((servicio) => (
+    <div key={servicio.id} className="service-card">
+      <h3>{servicio.titulo}</h3>
+      <p>{servicio.desc}</p>
+      
+      {/* Usamos Link para navegación interna y onClick para asegurar el scroll al inicio */}
+      <Link 
+        to="/nosotros" 
+        className="service-btn"
+        onClick={() => window.scrollTo(0, 0)}
+      >
+        Saber más →
+      </Link>
     </div>
+  ))}
+</div>
     
   </div>
 </section>

@@ -166,6 +166,36 @@ body {
   padding-right: 2.5rem;
 }
 
+.nav-whatsapp-btn {
+  background-color: #C9A14A; /* El dorado de tu logo */
+  color: #000 !important;    /* Texto negro para contraste */
+  padding: 10px 20px;
+  border-radius: 50px;       /* Formato cápsula */
+  font-weight: 700;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  margin-left: 15px;         /* Separación de los otros links */
+  font-size: 0.9rem;
+}
+
+.nav-whatsapp-btn:hover {
+  background-color: #d4af37;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(201, 161, 74, 0.4);
+}
+
+/* Ajuste para mobile */
+@media (max-width: 768px) {
+  .nav-whatsapp-btn {
+    margin: 15px 0;
+    width: fit-content;
+    align-self: center; /* Lo centra en el menú hamburguesa */
+  }
+}
+
 
 .public-marquina-surface {
   background: none;
