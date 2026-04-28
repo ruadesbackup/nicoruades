@@ -174,125 +174,125 @@ function HomePage() {
       />
 
       {/* HERO + BANNER fusionados: imagen/carrusel de fondo, texto superpuesto */}
-      <section className="hero-banner-combo fusion">
-        {/* Imagen/carrusel de fondo */}
-        <div className="hero-banner-bg">
-          {carouselSlides.length > 0 ? (
-            <div id="homeCarouselDesktop" className="carousel slide desktop-only" data-bs-ride="carousel">
-              <div className="carousel-inner home-carousel-inner">
-                {carouselSlides.map((slide, index) => (
-                  <article
-                    key={`desktop-item-${slide.carousel_id}`}
-                    className={`carousel-item ${index === 0 ? 'active' : ''}`}
-                  >
-                    <img
-                      src={slide.imgDesktopUrl}
-                      className="d-block w-100 home-carousel-image"
-                      alt={`Banner legal desktop ${index + 1}`}
-                      loading={index === 0 ? 'eager' : 'lazy'}
-                    />
-                  </article>
-                ))}
+        <section className="hero-banner-combo fusion">
+          {/* Imagen/carrusel de fondo SOLO DESKTOP */}
+          <div className="hero-banner-bg">
+            {carouselSlides.length > 0 ? (
+              <div id="homeCarouselDesktop" className="carousel slide desktop-only" data-bs-ride="carousel">
+                <div className="carousel-inner home-carousel-inner">
+                  {carouselSlides.map((slide, index) => (
+                    <article
+                      key={`desktop-item-${slide.carousel_id}`}
+                      className={`carousel-item ${index === 0 ? 'active' : ''}`}
+                    >
+                      <img
+                        src={slide.imgDesktopUrl}
+                        className="d-block w-100 home-carousel-image"
+                        alt={`Banner legal desktop ${index + 1}`}
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                      />
+                    </article>
+                  ))}
+                </div>
+                {/* Opcional: controles de carrusel si hay más de uno */}
+                {carouselSlides.length > 1 ? (
+                  <>
+                    <button
+                      className="carousel-control-prev"
+                      type="button"
+                      data-bs-target="#homeCarouselDesktop"
+                      data-bs-slide="prev"
+                      aria-label="Slide anterior"
+                    >
+                      <span className="carousel-control-prev-icon" aria-hidden="true" />
+                    </button>
+                    <button
+                      className="carousel-control-next"
+                      type="button"
+                      data-bs-target="#homeCarouselDesktop"
+                      data-bs-slide="next"
+                      aria-label="Slide siguiente"
+                    >
+                      <span className="carousel-control-next-icon" aria-hidden="true" />
+                    </button>
+                  </>
+                ) : null}
               </div>
-              {/* Opcional: controles de carrusel si hay más de uno */}
-              {carouselSlides.length > 1 ? (
-                <>
-                  <button
-                    className="carousel-control-prev"
-                    type="button"
-                    data-bs-target="#homeCarouselDesktop"
-                    data-bs-slide="prev"
-                    aria-label="Slide anterior"
-                  >
-                    <span className="carousel-control-prev-icon" aria-hidden="true" />
-                  </button>
-                  <button
-                    className="carousel-control-next"
-                    type="button"
-                    data-bs-target="#homeCarouselDesktop"
-                    data-bs-slide="next"
-                    aria-label="Slide siguiente"
-                  >
-                    <span className="carousel-control-next-icon" aria-hidden="true" />
-                  </button>
-                </>
-              ) : null}
-            </div>
-          ) : (
-            <div className="hero-banner-placeholder">
-              <img src={tribunalesBg} alt="Banner legal" className="home-carousel-image" />
+            ) : (
+              <div className="hero-banner-placeholder desktop-only">
+                <img src={tribunalesBg} alt="Banner legal" className="home-carousel-image" />
+              </div>
+            )}
+            {/* Overlay oscuro para legibilidad */}
+            <div className="hero-banner-overlay" />
+          </div>
+          {/* Contenido escrito superpuesto */}
+          <div className="hero-content left fusion">
+            <h1 className="hero-title">Abogado Penalista<br /><span>Nicolás Ruades</span></h1>
+            <p className="hero-subtitle">
+              Defensa penal estratégica y asesoramiento profesional en causas complejas.<br />
+              Córdoba, Argentina
+            </p>
+            <a href="#servicios" className="hero-cta-btn">Conocé nuestros servicios</a>
+          </div>
+          {/* Carrusel mobile SOLO MOBILE */}
+          {carouselSlides.length > 0 && (
+            <div className="hero-banner-carousel mobile-only">
+              <div id="homeCarouselMobile" className="carousel slide" data-bs-ride="carousel">
+                <div className="carousel-indicators">
+                  {carouselSlides.map((slide, index) => (
+                    <button
+                      key={`mobile-${slide.carousel_id}`}
+                      type="button"
+                      data-bs-target="#homeCarouselMobile"
+                      data-bs-slide-to={index}
+                      className={index === 0 ? 'active' : ''}
+                      aria-current={index === 0 ? 'true' : undefined}
+                      aria-label={`Slide mobile ${index + 1}`}
+                    />
+                  ))}
+                </div>
+                <div className="carousel-inner home-carousel-inner">
+                  {carouselSlides.map((slide, index) => (
+                    <article
+                      key={`mobile-item-${slide.carousel_id}`}
+                      className={`carousel-item ${index === 0 ? 'active' : ''}`}
+                    >
+                      <img
+                        src={slide.imgMobileUrl}
+                        className="d-block w-100 home-carousel-image"
+                        alt={`Banner legal mobile ${index + 1}`}
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                      />
+                    </article>
+                  ))}
+                </div>
+                {carouselSlides.length > 1 ? (
+                  <>
+                    <button
+                      className="carousel-control-prev"
+                      type="button"
+                      data-bs-target="#homeCarouselMobile"
+                      data-bs-slide="prev"
+                      aria-label="Slide anterior"
+                    >
+                      <span className="carousel-control-prev-icon" aria-hidden="true" />
+                    </button>
+                    <button
+                      className="carousel-control-next"
+                      type="button"
+                      data-bs-target="#homeCarouselMobile"
+                      data-bs-slide="next"
+                      aria-label="Slide siguiente"
+                    >
+                      <span className="carousel-control-next-icon" aria-hidden="true" />
+                    </button>
+                  </>
+                ) : null}
+              </div>
             </div>
           )}
-          {/* Overlay oscuro para legibilidad */}
-          <div className="hero-banner-overlay" />
-        </div>
-        {/* Contenido escrito superpuesto */}
-        <div className="hero-content left fusion">
-          <h1 className="hero-title">Abogado Penalista<br /><span>Nicolás Ruades</span></h1>
-          <p className="hero-subtitle">
-            Defensa penal estratégica y asesoramiento profesional en causas complejas.<br />
-            Córdoba, Argentina
-          </p>
-          <a href="#servicios" className="hero-cta-btn">Conocé nuestros servicios</a>
-        </div>
-        {/* Carrusel mobile debajo */}
-        {carouselSlides.length > 0 && (
-          <div className="hero-banner-carousel mobile-only">
-            <div id="homeCarouselMobile" className="carousel slide" data-bs-ride="carousel">
-              <div className="carousel-indicators">
-                {carouselSlides.map((slide, index) => (
-                  <button
-                    key={`mobile-${slide.carousel_id}`}
-                    type="button"
-                    data-bs-target="#homeCarouselMobile"
-                    data-bs-slide-to={index}
-                    className={index === 0 ? 'active' : ''}
-                    aria-current={index === 0 ? 'true' : undefined}
-                    aria-label={`Slide mobile ${index + 1}`}
-                  />
-                ))}
-              </div>
-              <div className="carousel-inner home-carousel-inner">
-                {carouselSlides.map((slide, index) => (
-                  <article
-                    key={`mobile-item-${slide.carousel_id}`}
-                    className={`carousel-item ${index === 0 ? 'active' : ''}`}
-                  >
-                    <img
-                      src={slide.imgMobileUrl}
-                      className="d-block w-100 home-carousel-image"
-                      alt={`Banner legal mobile ${index + 1}`}
-                      loading={index === 0 ? 'eager' : 'lazy'}
-                    />
-                  </article>
-                ))}
-              </div>
-              {carouselSlides.length > 1 ? (
-                <>
-                  <button
-                    className="carousel-control-prev"
-                    type="button"
-                    data-bs-target="#homeCarouselMobile"
-                    data-bs-slide="prev"
-                    aria-label="Slide anterior"
-                  >
-                    <span className="carousel-control-prev-icon" aria-hidden="true" />
-                  </button>
-                  <button
-                    className="carousel-control-next"
-                    type="button"
-                    data-bs-target="#homeCarouselMobile"
-                    data-bs-slide="next"
-                    aria-label="Slide siguiente"
-                  >
-                    <span className="carousel-control-next-icon" aria-hidden="true" />
-                  </button>
-                </>
-              ) : null}
-            </div>
-          </div>
-        )}
-      </section>
+        </section>
 
       {/* --- SECCIÓN QUIÉNES SOMOS RENOVADA (2 COLUMNAS) --- */}
 <section className="home-section who-are-we-section">

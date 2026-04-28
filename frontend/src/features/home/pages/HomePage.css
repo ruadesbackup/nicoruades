@@ -1,3 +1,22 @@
+/* Mostrar solo en desktop o mobile */
+.desktop-only { display: block; }
+.mobile-only { display: none; }
+
+@media (max-width: 991px) {
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
+}
+
+@media (min-width: 992px) {
+  .hero-banner-carousel { display: none !important; }
+}
+
+/* Ajuste para evitar solapamiento y asegurar responsividad en hero-banner-carousel */
+.hero-banner-carousel {
+  margin-top: 0;
+  width: 100%;
+  z-index: 2;
+}
 /* --- VARIABLES Y RESET GLOBAL --- */
 html, body {
   overflow-x: hidden; /* Evita el desplazamiento horizontal rebelde */
