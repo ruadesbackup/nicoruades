@@ -70,8 +70,11 @@
 
 
 
+
 .public-shell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: url('./assets/abstract-diamonds.webp') center center/cover fixed, #111;
   background-blend-mode: darken;
 }
@@ -85,6 +88,7 @@
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   box-sizing: border-box;
+  flex: 1 0 auto;
 }
 
 /* Limitar el ancho de la home-page */
@@ -287,6 +291,7 @@ body {
 .public-footer {
   margin-top: 1rem;
   padding: 1.5rem 0;
+  flex-shrink: 0;
 }
 
 .public-footer-inner {

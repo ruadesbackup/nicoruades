@@ -1,4 +1,6 @@
 import { useEffect, useMemo } from 'react'
+import SimpleMDE from 'react-simplemde-editor'
+import 'easymde/dist/easymde.min.css'
 import { useNewsAdmin } from '../hooks/useNewsAdmin'
 
 function formatDate(value) {
@@ -155,12 +157,17 @@ function NewsAdminPage() {
 
               <div className="col-12">
                 <label className="form-label">Contenido</label>
-                <textarea
-                  className="form-control"
-                  rows="5"
+                <SimpleMDE
                   value={form.content}
-                  onChange={(event) => updateFormField('content', event.target.value)}
-                  placeholder="Texto de la noticia"
+                  onChange={(value) => updateFormField('content', value)}
+                  options={{
+                    spellChecker: false,
+                    placeholder: 'Texto de la noticia',
+                    status: false,
+                    toolbar: [
+                      'bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', 'preview', 'guide'
+                    ]
+                  }}
                 />
               </div>
 
