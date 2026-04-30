@@ -16,7 +16,34 @@
   margin: 0 auto;
   padding: 1.25rem 0 2rem;
 }
+.nav-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
+  padding: 8px 14px;
+  border-radius: 8px;
+
+  background-color: #ef4444; /* rojo suave */
+  color: white;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  border: none;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.nav-logout-btn:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.nav-logout-btn svg {
+  stroke: white;
+}
 .admin-layout-shell::before,
 .admin-layout-shell::after {
   content: '';

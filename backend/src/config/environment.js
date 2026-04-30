@@ -1,11 +1,15 @@
-// Validar variables de entorno requeridas
-const requiredEnv = ['DB_NAME'];
 
+// Validar variables de entorno críticas
+const requiredEnv = [
+  'DB_NAME',
+  'JWT_SECRET',
+  'CLOUDINARY_CLOUD_NAME',
+  'CLOUDINARY_API_KEY',
+  'CLOUDINARY_API_SECRET',
+];
 requiredEnv.forEach((variable) => {
   if (!process.env[variable] && !process.env.DATABASE_URL) {
-    throw new Error(
-      `Falta variable de entorno: ${variable} o DATABASE_URL`
-    );
+    throw new Error(`Falta variable de entorno: ${variable}`);
   }
 });
 
