@@ -4,6 +4,8 @@ import './App.css'
 import AdminLayout from './layouts/AdminLayout'
 import PublicLayout from './layouts/PublicLayout'
 import AdminDashboardPage from './features/admin/pages/AdminDashboardPage'
+import LoginAdminPage from './features/admin/pages/LoginAdminPage'
+import { isAuthenticated } from './shared/services/auth'
 import HomePage from './features/home/pages/HomePage'
 import AboutPage from './features/about/pages/AboutPage'
 import NewsPage from './features/news/pages/NewsPage'
@@ -25,9 +27,22 @@ function App() {
         <Route
           path="/admin"
           element={
-            <AdminLayout>
-              <AdminDashboardPage />
-            </AdminLayout>
+            isAuthenticated() ? (
+              <AdminLayout>
+                <AdminDashboardPage />
+              </AdminLayout>
+            ) : (
+              <Navigate to="/admin/login" replace />
+            )
+          }
+        />
+
+        <Route
+          path="/admin/login"
+          element={
+            <PublicLayout>
+              <LoginAdminPage />
+            </PublicLayout>
           }
         />
 
