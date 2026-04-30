@@ -22,9 +22,9 @@ app.get('/', (_req, res) => {
 		message: 'Backend Nicolas Ruades operativo',
 		endpoints: {
 			health: '/health',
-			news: '/api/noticias',
-			carousel: '/api/carousel',
-			googleReviews: '/api/google-reviews',
+			news: '/noticias',
+			carousel: '/carousel',
+			googleReviews: '/google-reviews',
 		},
 	});
 });
@@ -33,10 +33,10 @@ app.get('/health', (_req, res) => {
 	res.json({ ok: true, message: 'Backend operativo' });
 });
 
-app.use('/api/noticias', newsRoutes);
-app.use('/api/carousel', carouselRoutes);
-app.use('/api/google-reviews', googleReviewsRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/noticias', newsRoutes);
+app.use('/carousel', carouselRoutes);
+app.use('/google-reviews', googleReviewsRoutes);
+app.use('/auth', authRoutes);
 
 app.use(errorHandler);
 
