@@ -1,7 +1,10 @@
 import { useEffect, useMemo } from 'react'
-import SimpleMDE from 'react-simplemde-editor'
-import 'easymde/dist/easymde.min.css'
+import TipTapEditor from '../components/TipTapEditor'
 import { useNewsAdmin } from '../hooks/useNewsAdmin'
+
+function stripHtml(html) {
+  return html?.replace(/<[^>]*>?/gm, '') || '';
+}
 
 function formatDate(value) {
   if (!value) {
@@ -157,17 +160,9 @@ function NewsAdminPage() {
 
               <div className="col-12">
                 <label className="form-label">Contenido</label>
-                <SimpleMDE
+                <TipTapEditor
                   value={form.content}
                   onChange={(value) => updateFormField('content', value)}
-                  options={{
-                    spellChecker: false,
-                    placeholder: 'Texto de la noticia',
-                    status: false,
-                    toolbar: [
-                      'bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', 'preview', 'guide'
-                    ]
-                  }}
                 />
               </div>
 
@@ -338,6 +333,10 @@ function NewsAdminPage() {
                         <td>
                           <p className="review-content mb-0">
                             {item.content ? `${item.content.slice(0, 140)}${item.content.length > 140 ? '...' : ''}` : 'Sin contenido'}
+                            {item.content 
+                              ? `${stripHtml(item.content).slice(0, 140)}${stripHtml(item.content).length > 140 ? '...' : ''}` 
+                              : 'Sin contenido'
+                            }
                           </p>
                         </td>
                         <td>

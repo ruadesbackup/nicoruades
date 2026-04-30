@@ -4,13 +4,16 @@ import { useParams } from 'react-router-dom';
 import SeoHead from '../../../shared/seo/SeoHead';
 import { apiClient } from '../../../shared/services/apiClient';
 import DOMPurify from 'dompurify';
-import { marked } from 'marked';
 import './NewsDetailPage.css';
 
 function resolveMediaUrl(pathname) {
   if (!pathname) return '';
   const base = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/api$/, '');
   return pathname.startsWith('http') ? pathname : `${base}${pathname}`;
+}
+
+function stripHtml(html) {
+  return html?.replace(/<[^>]*>?/gm, '') || '';
 }
 
 function formatDate(value) {
@@ -47,14 +50,15 @@ export default function NewsDetailPage() {
   }
 
 
-  // Convertir Markdown a HTML seguro
-  const htmlContent = DOMPurify.sanitize(marked.parse(news.content || ''));
+  // Contenido HTML seguro (ya viene de TipTap en el backend)
+  const htmlContent = DOMPurify.sanitize(news.content || '');
+  const plainText = stripHtml(news.content);
 
   return (
     <main className="news-detail-page">
       <SeoHead
         title={news.title}
-        description={news.content?.replace(/[#*_`>\-\n]/g, '').slice(0, 160) || news.title}
+        description={plainText.slice(0, 160) || news.title}
         canonicalPath={`/noticias/${news.slug}`}
         image={news.img_desktop ? resolveMediaUrl(news.img_desktop) : undefined}
         jsonLd={{
@@ -64,7 +68,7 @@ export default function NewsDetailPage() {
           datePublished: news.created_at,
           image: news.img_desktop ? resolveMediaUrl(news.img_desktop) : undefined,
           url: `/noticias/${news.slug}`,
-          description: news.content?.replace(/[#*_`>\-\n]/g, '').slice(0, 160),
+          description: plainText.slice(0, 160),
         }}
       />
       <article className="news-detail-article">

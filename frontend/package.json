@@ -10,15 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tiptap/extension-placeholder": "^3.22.5",
+    "@tiptap/react": "^3.22.5",
+    "@tiptap/starter-kit": "^3.22.5",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
     "dompurify": "^3.4.1",
-    "marked": "^18.0.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-helmet-async": "^3.0.0",
     "react-router-dom": "^7.14.2",
-    "react-simplemde-editor": "^5.2.0",
     "simplemde": "^1.11.2"
   },
   "devDependencies": {

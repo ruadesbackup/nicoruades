@@ -18,6 +18,23 @@ function formatDate(value) {
   return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
+// Extraer texto plano del HTML de TipTap
+function stripHtml(html) {
+  if (!html) return ''
+  // Crear un elemento temporal para parsear el HTML
+  const tmp = document.createElement('div')
+  tmp.innerHTML = html
+  return tmp.textContent || tmp.innerText || ''
+}
+
+// Truncar texto con ellipsis
+function truncateText(text, maxLength) {
+  if (!text) return ''
+  const trimmed = text.trim()
+  if (trimmed.length <= maxLength) return trimmed
+  return trimmed.slice(0, maxLength).trim() + '...'
+}
+
 export default function NewsPage() {
   const [news, setNews] = useState([])
   const [loading, setLoading] = useState(true)
@@ -67,7 +84,7 @@ export default function NewsPage() {
                 key={item.news_id}
                 image={item.img_desktop ? resolveMediaUrl(item.img_desktop) : ''}
                 title={item.title}
-                preview={item.content?.slice(0, 160) + (item.content?.length > 160 ? '...' : '')}
+                preview={truncateText(stripHtml(item.content), 160)}
                 link={`/noticias/${item.slug}`}
               />
             ))}
