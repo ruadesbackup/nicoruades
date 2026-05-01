@@ -7,11 +7,17 @@ const requiredEnv = [
   'CLOUDINARY_API_KEY',
   'CLOUDINARY_API_SECRET',
 ];
+
 requiredEnv.forEach((variable) => {
-  if (!process.env[variable] && !process.env.DATABASE_URL) {
+  if (!process.env[variable]) {
     throw new Error(`Falta variable de entorno: ${variable}`);
   }
 });
+
+// DB (puede ser URL o config individual)
+if (!process.env.DATABASE_URL && !process.env.DB_NAME) {
+  throw new Error('Falta configuración de base de datos');
+}
 
 module.exports = {
   DB_HOST: process.env.DB_HOST || 'localhost',
