@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { apiClient, getApiErrorMessage } from '../../../shared/services/apiClient'
 import { setToken } from '../../../shared/services/auth'
@@ -7,35 +7,79 @@ function LoginAdminPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const [sessionExpired, setSessionExpired] = useState(false)
+
   const navigate = useNavigate()
 
+  // ✅ detectar sesión expirada
+  useEffect(() => {
+    const expired = localStorage.getItem('session_expired')
+
+    if (expired) {
+      setSessionExpired(true)
+      localStorage.removeItem('session_expired')
+    }
+  }, [])
+
+  // ✅ login
   async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
+
     try {
       const resp = await apiClient.post('/auth/login', { email, password })
       const { token } = resp.data
+
       setToken(token)
-      navigate('/admin')
+
+      // 🔥 REDIRECCIÓN CORRECTA
+      navigate('/admin', { replace: true })
+
     } catch (err) {
-      setError(getApiErrorMessage(err))
+      if (err.response?.status === 401) {
+      setError('Email o contraseña incorrectos')
+    } else {
+      setError('Error al iniciar sesión. Intentalo de nuevo.')
+    }
     }
   }
 
   return (
     <div className="login-admin-page">
       <h3>Ingresar al panel</h3>
+
+      {sessionExpired && (
+        <div className="alert alert-warning">
+          Sesión expirada. Volvé a iniciar sesión.
+        </div>
+      )}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
+
         <div className="form-group">
           <label>Contraseña</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </div>
-        {error ? <div className="alert alert-danger">{error}</div> : null}
-        <button className="btn btn-primary" type="submit">Ingresar</button>
+
+        {error && <div className="alert alert-danger">{error}</div>}
+
+        <button className="btn btn-primary" type="submit">
+          Ingresar
+        </button>
       </form>
     </div>
   )

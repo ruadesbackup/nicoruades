@@ -28,7 +28,7 @@ async function login(req, res, next) {
       role: user.role,
     };
 
-    const token = jwt.sign(payload, JWT_SECRET || 'change_me', { expiresIn: '8h' });
+    const token = jwt.sign(payload, JWT_SECRET || 'change_me', { expiresIn: '5m' });
 
     return res.json({ ok: true, token, user: payload });
   } catch (err) {
