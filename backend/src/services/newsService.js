@@ -1,6 +1,5 @@
-const fs = require('fs');
-const path = require('path');
 const newsRepository = require('../repositories/newsRepository');
+const cloudinary = require('../config/cloudinary');
 
 function buildError(message, statusCode = 400) {
   const error = new Error(message);
@@ -9,25 +8,21 @@ function buildError(message, statusCode = 400) {
 }
 
 function validateUrl(value, fieldName) {
-  if (!value) {
-    return null;
-  }
+  if (!value) return null;
 
   try {
     const parsed = new URL(value);
     if (!['http:', 'https:'].includes(parsed.protocol)) {
-      throw new Error('invalid-protocol');
+      throw new Error();
     }
     return value;
-  } catch (_error) {
+  } catch {
     throw buildError(`${fieldName} debe ser una URL valida (http/https).`);
   }
 }
 
 function validateYoutubeUrl(value) {
-  if (!value) {
-    return null;
-  }
+  if (!value) return null;
 
   validateUrl(value, 'youtube_url');
 
@@ -66,61 +61,37 @@ async function buildUniqueSlug(title, excludeNewsId = null) {
     if (!(await newsRepository.existsSlug(candidate, excludeNewsId))) {
       return candidate;
     }
-    counter += 1;
+    counter++;
   }
 
-  throw buildError('No se pudo generar un slug unico para la noticia.', 500);
+  throw buildError('No se pudo generar un slug unico.', 500);
 }
 
-function filePathToPublicUrl(filePath) {
-  if (!filePath) {
-    return null;
-  }
+// 🔥 SUBIDA A CLOUDINARY
+const uploadToCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      { folder: 'noticias' },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    ).end(fileBuffer);
+  });
+};
 
-  const fileName = path.basename(filePath);
-  return `/uploads/banners/${fileName}`;
-}
-
-function deleteLocalFile(publicUrl) {
-  if (!publicUrl) {
-    return;
-  }
-
-  const fileName = path.basename(publicUrl);
-  const absolutePath = path.join(
-    __dirname,
-    '..',
-    '..',
-    'public',
-    'uploads',
-    'banners',
-    fileName
-  );
-
-  if (fs.existsSync(absolutePath)) {
-    fs.unlinkSync(absolutePath);
-  }
-}
-
-function normalizePayload(body, files, previousNews = null) {
+// 🔹 NORMALIZACIÓN (sin paths locales)
+function normalizePayload(body, previousNews = null) {
   const title = body.title ? String(body.title).trim() : previousNews?.title;
+
   const content =
-    body.content !== undefined ? String(body.content).trim() : previousNews?.content || null;
+    body.content !== undefined
+      ? String(body.content).trim()
+      : previousNews?.content || null;
 
   if (!title) {
     throw buildError('title es obligatorio.');
   }
-
-  const incomingDesktop = files?.img_desktop?.[0]?.path;
-  const incomingMobile = files?.img_mobile?.[0]?.path;
-
-  const imgDesktop = incomingDesktop
-    ? filePathToPublicUrl(incomingDesktop)
-    : previousNews?.img_desktop || null;
-
-  const imgMobile = incomingMobile
-    ? filePathToPublicUrl(incomingMobile)
-    : previousNews?.img_mobile || null;
 
   const youtubeUrl =
     body.youtube_url !== undefined
@@ -135,22 +106,34 @@ function normalizePayload(body, files, previousNews = null) {
   return {
     title,
     content,
-    img_desktop: imgDesktop,
-    img_mobile: imgMobile,
     youtube_url: youtubeUrl,
     external_url: externalUrl,
+    img_desktop: previousNews?.img_desktop || null,
+    img_mobile: previousNews?.img_mobile || null,
     titleChanged: previousNews ? title !== previousNews.title : true,
-    incomingDesktop: Boolean(incomingDesktop),
-    incomingMobile: Boolean(incomingMobile),
   };
 }
 
+// 🚀 CREATE
 async function createNews(body, files) {
-  const payload = normalizePayload(body, files);
+  const payload = normalizePayload(body);
+
+  if (files?.img_desktop) {
+    const result = await uploadToCloudinary(files.img_desktop[0].buffer);
+    payload.img_desktop = result.secure_url;
+  }
+
+  if (files?.img_mobile) {
+    const result = await uploadToCloudinary(files.img_mobile[0].buffer);
+    payload.img_mobile = result.secure_url;
+  }
+
   payload.slug = await buildUniqueSlug(payload.title);
+
   return newsRepository.createNews(payload);
 }
 
+// 🔍 GET
 async function getNewsById(newsId) {
   const news = await newsRepository.findNewsById(newsId);
 
@@ -177,6 +160,7 @@ async function getNewsBySlug(slug) {
   return news;
 }
 
+// 🔎 SEARCH
 async function searchNews(query) {
   const page = Number(query.page) > 0 ? Number(query.page) : 1;
   const limit = Number(query.limit) > 0 ? Number(query.limit) : 10;
@@ -197,6 +181,7 @@ async function searchNews(query) {
   };
 }
 
+// ✏️ UPDATE
 async function updateNews(newsId, body, files) {
   const existingNews = await newsRepository.findNewsById(newsId);
 
@@ -204,31 +189,32 @@ async function updateNews(newsId, body, files) {
     throw buildError('Noticia no encontrada.', 404);
   }
 
-  const payload = normalizePayload(body, files, existingNews);
+  const payload = normalizePayload(body, existingNews);
+
+  if (files?.img_desktop) {
+    const result = await uploadToCloudinary(files.img_desktop[0].buffer);
+    payload.img_desktop = result.secure_url;
+  }
+
+  if (files?.img_mobile) {
+    const result = await uploadToCloudinary(files.img_mobile[0].buffer);
+    payload.img_mobile = result.secure_url;
+  }
+
   payload.slug = payload.titleChanged
     ? await buildUniqueSlug(payload.title, newsId)
     : existingNews.slug;
 
-  if (payload.incomingDesktop) {
-    deleteLocalFile(existingNews.img_desktop);
-  }
-
-  if (payload.incomingMobile) {
-    deleteLocalFile(existingNews.img_mobile);
-  }
-
   return newsRepository.updateNews(newsId, payload);
 }
 
+// 🗑 DELETE
 async function deleteNews(newsId) {
   const removed = await newsRepository.deleteNews(newsId);
 
   if (!removed) {
     throw buildError('Noticia no encontrada.', 404);
   }
-
-  deleteLocalFile(removed.img_desktop);
-  deleteLocalFile(removed.img_mobile);
 
   return removed;
 }

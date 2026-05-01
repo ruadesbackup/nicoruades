@@ -1,7 +1,6 @@
-const fs = require('fs');
-const path = require('path');
 const carouselRepository = require('../repositories/carouselRepository');
 const newsRepository = require('../repositories/newsRepository');
+const cloudinary = require('../config/cloudinary');
 
 function buildError(message, statusCode = 400) {
   const error = new Error(message);
@@ -9,45 +8,30 @@ function buildError(message, statusCode = 400) {
   return error;
 }
 
-function filePathToPublicUrl(filePath) {
-  if (!filePath) {
-    return null;
-  }
+// 🔥 SUBIR A CLOUDINARY
+const uploadToCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      { folder: 'carousel' },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    ).end(fileBuffer);
+  });
+};
 
-  const fileName = path.basename(filePath);
-  return `/uploads/banners/${fileName}`;
-}
-
-function deleteLocalFile(publicUrl) {
-  if (!publicUrl) {
-    return;
-  }
-
-  const fileName = path.basename(publicUrl);
-  const absolutePath = path.join(
-    __dirname,
-    '..',
-    '..',
-    'public',
-    'uploads',
-    'banners',
-    fileName
-  );
-
-  if (fs.existsSync(absolutePath)) {
-    fs.unlinkSync(absolutePath);
-  }
-}
-
+// 🔧 HELPERS
 function parseOrder(value, previousItem = null) {
   const fallback = previousItem ? previousItem.display_order : 0;
+
   if (value === undefined || value === null || value === '') {
     return fallback;
   }
 
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed < 0) {
-    throw buildError('display_order debe ser un entero mayor o igual a 0.');
+    throw buildError('display_order debe ser un entero >= 0.');
   }
 
   return parsed;
@@ -55,9 +39,8 @@ function parseOrder(value, previousItem = null) {
 
 function parseNewsId(value, previousItem = null) {
   const fallback = previousItem ? previousItem.news_id : null;
-  if (value === undefined) {
-    return fallback;
-  }
+
+  if (value === undefined) return fallback;
 
   if (value === null || value === '' || String(value).toLowerCase() === 'null') {
     return null;
@@ -65,99 +48,87 @@ function parseNewsId(value, previousItem = null) {
 
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed <= 0) {
-    throw buildError('news_id debe ser un entero positivo o null.');
+    throw buildError('news_id debe ser entero positivo o null.');
   }
 
   return parsed;
 }
 
 function parseBoolean(value, fieldName) {
-  if (typeof value === 'boolean') {
-    return value;
-  }
+  if (typeof value === 'boolean') return value;
 
   if (typeof value === 'string') {
-    const normalized = value.trim().toLowerCase();
-
-    if (normalized === 'true') {
-      return true;
-    }
-
-    if (normalized === 'false') {
-      return false;
-    }
+    const v = value.trim().toLowerCase();
+    if (v === 'true') return true;
+    if (v === 'false') return false;
   }
 
-  throw buildError(`${fieldName} debe ser un booleano.`);
+  throw buildError(`${fieldName} debe ser booleano.`);
 }
 
 async function validateNewsReference(newsId) {
-  if (!newsId) {
-    return;
-  }
+  if (!newsId) return;
 
-  const foundNews = await newsRepository.findNewsById(newsId);
-  if (!foundNews) {
-    throw buildError('La noticia asociada (news_id) no existe.', 404);
+  const found = await newsRepository.findNewsById(newsId);
+  if (!found) {
+    throw buildError('La noticia asociada no existe.', 404);
   }
 }
 
-function normalizePayload(body, files, previousItem = null) {
-  const incomingDesktop = files?.img_desktop?.[0]?.path;
-  const incomingMobile = files?.img_mobile?.[0]?.path;
-
+// 🧠 NORMALIZACIÓN (SIN LOCAL FILES)
+function normalizePayload(body, previousItem = null) {
   const removeDesktop =
-    !incomingDesktop && body.remove_img_desktop !== undefined
+    body.remove_img_desktop !== undefined
       ? parseBoolean(body.remove_img_desktop, 'remove_img_desktop')
       : false;
 
   const removeMobile =
-    !incomingMobile && body.remove_img_mobile !== undefined
+    body.remove_img_mobile !== undefined
       ? parseBoolean(body.remove_img_mobile, 'remove_img_mobile')
       : false;
-
-  const imgDesktop = removeDesktop
-    ? null
-    : incomingDesktop
-      ? filePathToPublicUrl(incomingDesktop)
-      : previousItem?.img_desktop || null;
-
-  const imgMobile = removeMobile
-    ? null
-    : incomingMobile
-      ? filePathToPublicUrl(incomingMobile)
-      : previousItem?.img_mobile || null;
 
   const displayOrder = parseOrder(body.display_order, previousItem);
   const newsId = parseNewsId(body.news_id, previousItem);
 
-  if (!imgDesktop && !imgMobile) {
-    throw buildError('Debes subir al menos una imagen (img_desktop o img_mobile).');
-  }
-
   return {
-    img_desktop: imgDesktop,
-    img_mobile: imgMobile,
+    img_desktop: removeDesktop ? null : previousItem?.img_desktop || null,
+    img_mobile: removeMobile ? null : previousItem?.img_mobile || null,
     display_order: displayOrder,
     news_id: newsId,
-    incomingDesktop: Boolean(incomingDesktop),
-    incomingMobile: Boolean(incomingMobile),
     removeDesktop,
     removeMobile,
   };
 }
 
+// 🚀 CREATE
 async function createCarousel(body, files) {
-  const payload = normalizePayload(body, files);
+  const payload = normalizePayload(body);
+
+  if (files?.img_desktop) {
+    const result = await uploadToCloudinary(files.img_desktop[0].buffer);
+    payload.img_desktop = result.secure_url;
+  }
+
+  if (files?.img_mobile) {
+    const result = await uploadToCloudinary(files.img_mobile[0].buffer);
+    payload.img_mobile = result.secure_url;
+  }
+
+  if (!payload.img_desktop && !payload.img_mobile) {
+    throw buildError('Debes subir al menos una imagen.');
+  }
+
   await validateNewsReference(payload.news_id);
+
   return carouselRepository.createCarousel(payload);
 }
 
+// 🔍 GET
 async function getCarouselById(carouselId) {
   const item = await carouselRepository.findCarouselById(carouselId);
 
   if (!item) {
-    throw buildError('Item de carousel no encontrado.', 404);
+    throw buildError('Item no encontrado.', 404);
   }
 
   return item;
@@ -167,44 +138,38 @@ async function listCarousel() {
   return carouselRepository.listCarousel();
 }
 
+// ✏️ UPDATE
 async function updateCarousel(carouselId, body, files) {
-  const existingItem = await carouselRepository.findCarouselById(carouselId);
+  const existing = await carouselRepository.findCarouselById(carouselId);
 
-  if (!existingItem) {
-    throw buildError('Item de carousel no encontrado.', 404);
+  if (!existing) {
+    throw buildError('Item no encontrado.', 404);
   }
 
-  const payload = normalizePayload(body, files, existingItem);
+  const payload = normalizePayload(body, existing);
+
+  if (files?.img_desktop) {
+    const result = await uploadToCloudinary(files.img_desktop[0].buffer);
+    payload.img_desktop = result.secure_url;
+  }
+
+  if (files?.img_mobile) {
+    const result = await uploadToCloudinary(files.img_mobile[0].buffer);
+    payload.img_mobile = result.secure_url;
+  }
+
   await validateNewsReference(payload.news_id);
-
-  if (payload.incomingDesktop) {
-    deleteLocalFile(existingItem.img_desktop);
-  }
-
-  if (payload.removeDesktop) {
-    deleteLocalFile(existingItem.img_desktop);
-  }
-
-  if (payload.incomingMobile) {
-    deleteLocalFile(existingItem.img_mobile);
-  }
-
-  if (payload.removeMobile) {
-    deleteLocalFile(existingItem.img_mobile);
-  }
 
   return carouselRepository.updateCarousel(carouselId, payload);
 }
 
+// 🗑 DELETE
 async function deleteCarousel(carouselId) {
   const removed = await carouselRepository.deleteCarousel(carouselId);
 
   if (!removed) {
-    throw buildError('Item de carousel no encontrado.', 404);
+    throw buildError('Item no encontrado.', 404);
   }
-
-  deleteLocalFile(removed.img_desktop);
-  deleteLocalFile(removed.img_mobile);
 
   return removed;
 }
