@@ -57,7 +57,7 @@
   }
 
   .about-group-photo {
-    height: 300px;
+    height: 285px;
     object-fit: cover;
     object-position: center 20%; /* clave para ver a los abogados */
     filter: brightness(0.88);
