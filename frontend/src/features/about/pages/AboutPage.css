@@ -49,6 +49,40 @@
   text-shadow: 0 2px 8px #111;
 }
 
+@media (max-width: 768px) {
+
+  .about-hero-img {
+    min-height: 300px;
+    border-radius: 16px;
+  }
+
+  .about-group-photo {
+    height: 300px;
+    object-fit: cover;
+    object-position: center 20%; /* clave para ver a los abogados */
+    filter: brightness(0.88);
+  }
+
+  .about-hero-overlay {
+    padding: 1.5rem 1rem;
+    justify-content: flex-end;
+    background: linear-gradient(
+      0deg,
+      rgba(17, 17, 17, 0.88) 35%,
+      transparent 100%
+    );
+  }
+
+  .about-hero-title {
+    font-size: 1.5rem;
+  }
+
+  .about-hero-lead {
+    font-size: 0.95rem;
+    max-width: 90%;
+  }
+}
+
 .about-team-grid {
   display: flex;
   flex-wrap: wrap;

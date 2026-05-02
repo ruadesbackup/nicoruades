@@ -100,6 +100,18 @@ export default function NewsDetailPage() {
             Ver noticia completa ↗
           </a>
         )}
+
+        {news.youtube_url && (
+          <a
+            href={news.youtube_url}
+            className="news-detail-external-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver video ↗
+          </a>
+        )}
+
       </article>
     </main>
   );
