@@ -47,6 +47,8 @@ html, body {
 
 /* --- TARJETA DE CONTENIDO (GLASSMORPHISM) --- */
 .hero-content.left.fusion {
+  display: flex;
+  flex-direction: column;
   position: relative;
   z-index: 3;
   max-width: 540px;
@@ -66,7 +68,7 @@ html, body {
   font-size: clamp(2.5rem, 5vw, 4rem);
   line-height: 1.1;
   color: #fff;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .hero-title span {
@@ -76,7 +78,7 @@ html, body {
 .hero-subtitle {
   font-size: 1.1rem;
   color: #D1D5DB;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   line-height: 1.6;
 }
 
