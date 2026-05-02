@@ -91,32 +91,43 @@ function AdminLayout({ children }) {
       </div>
 
       <footer className="public-footer glass">
-        <div className="public-footer-inner">
+  <div className="public-footer-inner">
 
-          <div className="footer-brand">
-            <img src={logoImg} alt="Logo" height={36} />
-            <div>
-              <span>ESTUDIO DE ABOGACIA</span>
-              <br />
-              <span>ANR & ASOC</span>
-            </div>
-          </div>
+    <div className="footer-brand">
 
-          <nav className="footer-nav">
-            <NavLink to="/">Inicio</NavLink>
-            <NavLink to="/noticias">Noticias</NavLink>
-            <NavLink to="/nosotros">Nosotros</NavLink>
+      <div className="footer-logo-box">
+        <img
+          src={logoImg}
+          alt="Logo Estudio de Abogacía ANR & ASOC"
+          className="footer-logo-img"
+        />
+      </div>
 
-            <NavLink to="/admin">Admin</NavLink>
-          </nav>
+      <div className="footer-brand-text">
+        <span className="footer-brand-title">ESTUDIO DE ABOGACIA</span>
+        <span className="footer-brand-subtitle">ANR & ASOC</span>
+      </div>
 
-          <div>
-            <p>Estudio Jurídico Penal · Atención profesional y estratégica.</p>
-            <p>© {new Date().getFullYear()} Nicolas Ruades</p>
-          </div>
+    </div>
 
-        </div>
-      </footer>
+    <nav className="footer-nav" aria-label="Navegación del pie">
+      <NavLink to="/" className="footer-nav-link">Inicio</NavLink>
+      <NavLink to="/noticias" className="footer-nav-link">Noticias</NavLink>
+      <NavLink to="/nosotros" className="footer-nav-link">Nosotros</NavLink>
+      <NavLink to="/admin" className="footer-nav-link">Admin</NavLink>
+    </nav>
+
+    <div className="footer-contact">
+      <p className="footer-contact-text">
+        Estudio Jurídico Penal · Atención profesional y estratégica.
+      </p>
+      <p className="footer-copyright">
+        © {new Date().getFullYear()} Estudio Jurídico Nicolas Ruades. Todos los derechos reservados.
+      </p>
+    </div>
+
+  </div>
+</footer>
     </div>
   )
 }
