@@ -46,42 +46,55 @@ function LoginAdminPage() {
 
   return (
     <div className="login-admin-page">
-      <h3>Ingresar al panel</h3>
+  <div className="login-card">
 
-      {sessionExpired && (
-        <div className="alert alert-warning">
-          Sesión expirada. Volvé a iniciar sesión.
+    <div className="login-header">
+      <h3>Ingresar al panel</h3>
+      <p>Acceso administrativo</p>
+    </div>
+
+    {sessionExpired && (
+      <div className="alert-warning">
+        Sesión expirada. Volvé a iniciar sesión.
+      </div>
+    )}
+
+    <form onSubmit={handleSubmit} className="login-form">
+
+      <div className="form-block">
+        <label>Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="form-block">
+        <label>Contraseña</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+
+      {error && (
+        <div className="alert-error">
+          {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+      <button className="btn-gold" type="submit">
+        Ingresar
+      </button>
 
-        <div className="form-group">
-          <label>Contraseña</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+    </form>
 
-        {error && <div className="alert alert-danger">{error}</div>}
-
-        <button className="btn btn-primary" type="submit">
-          Ingresar
-        </button>
-      </form>
-    </div>
+  </div>
+</div>
   )
 }
 

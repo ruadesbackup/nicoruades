@@ -9,28 +9,34 @@ function AdminDashboardPage() {
   return (
     <>
       <section className="module-switch" aria-label="Selección de módulo">
-        <button
-          type="button"
-          className={`btn btn-sm ${activeModule === 'news' ? 'btn-primary' : 'btn-outline-light'}`}
-          onClick={() => setActiveModule('news')}
-        >
-          Noticias
-        </button>
-        <button
-          type="button"
-          className={`btn btn-sm ${activeModule === 'carousel' ? 'btn-primary' : 'btn-outline-light'}`}
-          onClick={() => setActiveModule('carousel')}
-        >
-          Banners Home
-        </button>
-        <button
-          type="button"
-          className={`btn btn-sm ${activeModule === 'reviews' ? 'btn-primary' : 'btn-outline-light'}`}
-          onClick={() => setActiveModule('reviews')}
-        >
-          Reseñas
-        </button>
-      </section>
+  <div className="module-switch-card">
+
+    <button
+      type="button"
+      className={`module-btn ${activeModule === 'news' ? 'active' : ''}`}
+      onClick={() => setActiveModule('news')}
+    >
+      Noticias
+    </button>
+
+    <button
+      type="button"
+      className={`module-btn ${activeModule === 'carousel' ? 'active' : ''}`}
+      onClick={() => setActiveModule('carousel')}
+    >
+      Banners Home
+    </button>
+
+    <button
+      type="button"
+      className={`module-btn ${activeModule === 'reviews' ? 'active' : ''}`}
+      onClick={() => setActiveModule('reviews')}
+    >
+      Reseñas
+    </button>
+
+  </div>
+</section>
 
       {activeModule === 'news' ? <NewsAdminPage /> : null}
       {activeModule === 'carousel' ? <CarouselAdminPage /> : null}
