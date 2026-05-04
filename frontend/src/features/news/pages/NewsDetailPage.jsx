@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import SeoHead from '../../../shared/seo/SeoHead';
 import { apiClient } from '../../../shared/services/apiClient';
 import DOMPurify from 'dompurify';
+import { addTargetBlankToLinks } from '../utils/links';
 import './NewsDetailPage.css';
 
 function resolveMediaUrl(pathname) {
@@ -51,7 +52,7 @@ export default function NewsDetailPage() {
 
 
   // Contenido HTML seguro (ya viene de TipTap en el backend)
-  const htmlContent = DOMPurify.sanitize(news.content || '');
+  const htmlContent = addTargetBlankToLinks(DOMPurify.sanitize(news.content || ''));
   const plainText = stripHtml(news.content);
 
   return (

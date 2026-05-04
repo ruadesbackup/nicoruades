@@ -29,8 +29,15 @@ app.get('/', (_req, res) => {
 	});
 });
 
-app.get('/api/health', (_req, res) => {
-	res.json({ ok: true, message: 'Backend operativo' });
+const pool = require('./config/db');
+app.get('/api/health', async (_req, res) => {
+	try {
+		// Consulta mínima para mantener activa la conexión
+		await pool.query('SELECT 1');
+		res.json({ ok: true, message: 'Backend operativo' });
+	} catch (error) {
+		res.status(500).json({ ok: false, message: 'Error de conexión a la base de datos', error: error.message });
+	}
 });
 
 app.use('/api/noticias', newsRoutes);
