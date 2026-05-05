@@ -38,10 +38,12 @@ const BASE_URL = process.env.BASE_URL || 'https://www.nicolasruades.com.ar';
 app.get('/sitemap.xml', async (_req, res) => {
 	try {
 		// Obtener noticias desde la base de datos
-		const [noticias] = await pool.query('SELECT id, slug, updated_at FROM noticias WHERE publicada = 1');
+
+		// Usar la tabla 'news' y los campos correctos
+		const [news] = await pool.query('SELECT news_id, slug, created_at FROM news ORDER BY created_at DESC');
 
 		// Construir URLs de noticias
-		const noticiasUrls = noticias.map(noticia => `    <url>\n      <loc>${BASE_URL}/noticias/${noticia.slug || noticia.id}</loc>\n      <lastmod>${noticia.updated_at ? new Date(noticia.updated_at).toISOString().split('T')[0] : ''}</lastmod>\n      <changefreq>weekly</changefreq>\n      <priority>0.8</priority>\n    </url>`).join('\n');
+		const noticiasUrls = news.map(noticia => `    <url>\n      <loc>${BASE_URL}/noticias/${noticia.slug || noticia.news_id}</loc>\n      <lastmod>${noticia.created_at ? new Date(noticia.created_at).toISOString().split('T')[0] : ''}</lastmod>\n      <changefreq>weekly</changefreq>\n      <priority>0.8</priority>\n    </url>`).join('\n');
 
 		// Otras URLs principales
 		const staticUrls = [
