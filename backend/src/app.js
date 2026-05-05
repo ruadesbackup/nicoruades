@@ -30,6 +30,34 @@ app.get('/', (_req, res) => {
 });
 
 const pool = require('./config/db');
+
+// Utilidad para construir URLs absolutas
+const BASE_URL = process.env.BASE_URL || 'https://www.nicolasruades.com.ar';
+
+// Endpoint dinámico para sitemap.xml
+app.get('/sitemap.xml', async (_req, res) => {
+	try {
+		// Obtener noticias desde la base de datos
+		const [noticias] = await pool.query('SELECT id, slug, updated_at FROM noticias WHERE publicada = 1');
+
+		// Construir URLs de noticias
+		const noticiasUrls = noticias.map(noticia => `    <url>\n      <loc>${BASE_URL}/noticias/${noticia.slug || noticia.id}</loc>\n      <lastmod>${noticia.updated_at ? new Date(noticia.updated_at).toISOString().split('T')[0] : ''}</lastmod>\n      <changefreq>weekly</changefreq>\n      <priority>0.8</priority>\n    </url>`).join('\n');
+
+		// Otras URLs principales
+		const staticUrls = [
+			{ loc: `${BASE_URL}/`, priority: '1.0' },
+			{ loc: `${BASE_URL}/noticias`, priority: '0.9' },
+			{ loc: `${BASE_URL}/about`, priority: '0.7' },
+			{ loc: `${BASE_URL}/carousel`, priority: '0.6' },
+		].map(u => `    <url>\n      <loc>${u.loc}</loc>\n      <changefreq>weekly</changefreq>\n      <priority>${u.priority}</priority>\n    </url>`).join('\n');
+
+		const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${staticUrls}\n${noticiasUrls}\n</urlset>`;
+		res.header('Content-Type', 'application/xml');
+		res.send(sitemap);
+	} catch (error) {
+		res.status(500).send('Error generando sitemap');
+	}
+});
 app.get('/api/health', async (_req, res) => {
 	try {
 		// Consulta mínima para mantener activa la conexión
