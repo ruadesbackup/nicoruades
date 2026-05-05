@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/sitemap.xml",
-      "destination": "https://nicolasruades-backend.vercel.app/sitemap.xml"
+      "destination": "https://nicoruades.onrender.com/sitemap.xml"
     },
     { "source": "/(.*)", "destination": "/" }
   ]

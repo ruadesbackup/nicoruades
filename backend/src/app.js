@@ -55,7 +55,8 @@ app.get('/sitemap.xml', async (_req, res) => {
 		res.header('Content-Type', 'application/xml');
 		res.send(sitemap);
 	} catch (error) {
-		res.status(500).send('Error generando sitemap');
+		console.error('Error generando sitemap:', error);
+		res.status(500).send('Error generando sitemap: ' + error.message);
 	}
 });
 app.get('/api/health', async (_req, res) => {
