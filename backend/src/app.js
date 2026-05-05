@@ -39,8 +39,10 @@ app.get('/sitemap.xml', async (_req, res) => {
 	try {
 		// Obtener noticias desde la base de datos
 
-		// Usar la tabla 'news' y los campos correctos
-		const [news] = await pool.query('SELECT news_id, slug, created_at FROM news ORDER BY created_at DESC');
+
+		// Usar la tabla 'news' y los campos correctos (PostgreSQL: usar .rows)
+		const result = await pool.query('SELECT news_id, slug, created_at FROM news ORDER BY created_at DESC');
+		const news = result.rows;
 
 		// Construir URLs de noticias
 		const noticiasUrls = news.map(noticia => `    <url>\n      <loc>${BASE_URL}/noticias/${noticia.slug || noticia.news_id}</loc>\n      <lastmod>${noticia.created_at ? new Date(noticia.created_at).toISOString().split('T')[0] : ''}</lastmod>\n      <changefreq>weekly</changefreq>\n      <priority>0.8</priority>\n    </url>`).join('\n');
