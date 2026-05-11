@@ -8,19 +8,11 @@ function buildError(message, statusCode = 400) {
   return error;
 }
 
-// 🔥 SUBIR A CLOUDINARY CON OPTIMIZACIONES
+// 🔥 SUBIR A CLOUDINARY
 const uploadToCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload_stream(
-      { 
-        folder: 'carousel',
-        quality: 'auto',
-        fetch_format: 'auto',
-        responsive_width: true,
-        width: 1280,
-        crop: 'fill',
-        gravity: 'auto',
-      },
+      { folder: 'carousel' },
       (error, result) => {
         if (error) reject(error);
         else resolve(result);

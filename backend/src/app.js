@@ -1,7 +1,6 @@
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
-const compression = require('compression');
 
 const newsRoutes = require('./routes/newsRoutes');
 const carouselRoutes = require('./routes/carouselRoutes');
@@ -12,16 +11,10 @@ const errorHandler = require('./middlewares/errorHandler');
 const app = express();
 
 app.use(cors());
-// Compression middleware para reducir tamaño de respuestas
-app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Cache headers para assets estáticos (1 año)
-app.use('/uploads', express.static(path.join(__dirname, '..', 'public', 'uploads'), {
-	maxAge: '1y',
-	etag: false,
-}));
+app.use('/uploads', express.static(path.join(__dirname, '..', 'public', 'uploads')));
 
 app.get('/', (_req, res) => {
 	res.json({
@@ -44,11 +37,10 @@ const BASE_URL = process.env.BASE_URL || 'https://www.nicolasruades.com.ar';
 // Endpoint dinámico para sitemap.xml
 app.get('/sitemap.xml', async (_req, res) => {
 	try {
-		// Caché de 24 horas para sitemap
-		res.set('Cache-Control', 'public, max-age=86400');
-		res.header('Content-Type', 'application/xml');
-		
 		// Obtener noticias desde la base de datos
+
+
+		// Usar la tabla 'news' y los campos correctos (PostgreSQL: usar .rows)
 		const result = await pool.query('SELECT news_id, slug, created_at FROM news ORDER BY created_at DESC');
 		const news = result.rows;
 
@@ -64,6 +56,7 @@ app.get('/sitemap.xml', async (_req, res) => {
 		].map(u => `    <url>\n      <loc>${u.loc}</loc>\n      <changefreq>weekly</changefreq>\n      <priority>${u.priority}</priority>\n    </url>`).join('\n');
 
 		const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${staticUrls}\n${noticiasUrls}\n</urlset>`;
+		res.header('Content-Type', 'application/xml');
 		res.send(sitemap);
 	} catch (error) {
 		console.error('Error generando sitemap:', error);
