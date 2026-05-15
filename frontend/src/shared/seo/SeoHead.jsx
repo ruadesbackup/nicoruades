@@ -7,7 +7,7 @@ function SeoHead({
   image = '/uploads/banners/seo-default.jpg',
   jsonLd,
 }) {
-  const siteBase = (import.meta.env.VITE_SITE_URL || 'http://localhost:5173').replace(/\/$/, '')
+  const siteBase = (import.meta.env.VITE_SITE_URL || 'https://www.nicolasruades.com.ar').replace(/\/$/, '')
   const canonicalUrl = `${siteBase}${canonicalPath}`
   const imageUrl = image.startsWith('http') ? image : `${siteBase}${image}`
 

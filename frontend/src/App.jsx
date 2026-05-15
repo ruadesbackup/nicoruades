@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import './App.css'
@@ -16,6 +16,18 @@ const LoginAdminPage = lazy(() => import('./features/admin/pages/LoginAdminPage'
 const AdminDashboardPage = lazy(() => import('./features/admin/pages/AdminDashboardPage'))
 
 function App() {
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const hostname = window.location.hostname
+    const productionHost = 'www.nicolasruades.com.ar'
+
+    if (hostname.endsWith('.vercel.app') && hostname !== productionHost) {
+      const targetUrl = `https://${productionHost}${window.location.pathname}${window.location.search}${window.location.hash}`
+      window.location.replace(targetUrl)
+    }
+  }, [])
+
   return (
     <HelmetProvider>
       <Suspense
