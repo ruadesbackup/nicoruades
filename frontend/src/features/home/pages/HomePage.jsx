@@ -2,7 +2,6 @@ import { useRef, useState, useEffect } from 'react'
 import SeoHead from '../../../shared/seo/SeoHead'
 import { useHomeData } from '../hooks/useHomeData'
 import googleLogo from '../../../assets/google.webp'
-import tribunalesBg from '../../../assets/Tribunales.jpeg'
 import './HomePage.css'
 import nicolasRuadesImg from '../../../assets/perfil/NicolasRuadesHome1.jpg'
 import { Link } from 'react-router-dom';
@@ -31,6 +30,7 @@ function authorFallback(name) {
 function HomePage() {
   const { carouselSlides, reviews, loading, error } = useHomeData()
   const [brokenAvatarMap, setBrokenAvatarMap] = useState({})
+  const [currentSlide, setCurrentSlide] = useState(0)
   
   // 1. REFERENCIAS DIFERENTES (Vital para que no se pise el scroll)
   const reviewsScrollerRef = useRef(null)
@@ -40,6 +40,20 @@ function HomePage() {
   const [currentService, setCurrentService] = useState(0)
   const [currentReview, setCurrentReview] = useState(0)
   const autoScrollInterval = 3000
+
+  useEffect(() => {
+    setCurrentSlide(0)
+  }, [carouselSlides.length])
+
+  useEffect(() => {
+    if (carouselSlides.length <= 1) return
+
+    const timer = window.setInterval(() => {
+      setCurrentSlide((current) => (current + 1) % carouselSlides.length)
+    }, 5000)
+
+    return () => window.clearInterval(timer)
+  }, [carouselSlides.length])
 
   // 3. LISTA DE SERVICIOS (debe estar antes de los useEffect que la usan)
   const listaServicios = [
@@ -137,6 +151,16 @@ function HomePage() {
     })
   }
 
+  const goToPreviousSlide = () => {
+    if (carouselSlides.length <= 1) return
+    setCurrentSlide((current) => (current - 1 + carouselSlides.length) % carouselSlides.length)
+  }
+
+  const goToNextSlide = () => {
+    if (carouselSlides.length <= 1) return
+    setCurrentSlide((current) => (current + 1) % carouselSlides.length)
+  }
+
   // ... (markAvatarAsBroken y jsonLd se mantienen igual)
 
   const markAvatarAsBroken = (reviewId) => {
@@ -179,50 +203,51 @@ function HomePage() {
           {/* Imagen/carrusel de fondo SOLO DESKTOP */}
           <div className="hero-banner-bg">
             {carouselSlides.length > 0 ? (
-              <div id="homeCarouselDesktop" className="carousel slide" data-bs-ride="carousel">
-                <div className="carousel-inner home-carousel-inner">
-                  {carouselSlides.map((slide, index) => (
-                    <article
-                      key={`desktop-item-${slide.carousel_id}`}
-                      className={`carousel-item ${index === 0 ? 'active' : ''}`}
-                    >
+              <div className="home-carousel" aria-roledescription="carousel" aria-label="Banner principal">
+                {carouselSlides.map((slide, index) => (
+                  <article
+                    key={`desktop-item-${slide.carousel_id}`}
+                    className={`home-carousel-slide${index === currentSlide ? ' is-active' : ''}`}
+                    aria-hidden={index !== currentSlide}
+                  >
+                    <picture>
+                      <source media="(max-width: 767px)" srcSet={slide.imgMobileUrl || slide.imgDesktopUrl} />
                       <img
                         src={slide.imgDesktopUrl}
-                        className="d-block w-100 home-carousel-image"
+                        className="home-carousel-image"
                         alt={`Banner legal desktop ${index + 1}`}
-                        loading={index === 0 ? 'eager' : 'lazy'}
+                        width={1200}
+                        height={675}
+                        loading={index === currentSlide ? 'eager' : 'lazy'}
+                        decoding="async"
                       />
-                    </article>
-                  ))}
-                </div>
-                {/* Opcional: controles de carrusel si hay más de uno */}
+                    </picture>
+                  </article>
+                ))}
+
                 {carouselSlides.length > 1 ? (
                   <>
                     <button
-                      className="carousel-control-prev"
+                      className="home-carousel-control home-carousel-control-prev"
                       type="button"
-                      data-bs-target="#homeCarouselDesktop"
-                      data-bs-slide="prev"
+                      onClick={goToPreviousSlide}
                       aria-label="Slide anterior"
                     >
-                      <span className="carousel-control-prev-icon" aria-hidden="true" />
+                      <span aria-hidden="true">‹</span>
                     </button>
                     <button
-                      className="carousel-control-next"
+                      className="home-carousel-control home-carousel-control-next"
                       type="button"
-                      data-bs-target="#homeCarouselDesktop"
-                      data-bs-slide="next"
+                      onClick={goToNextSlide}
                       aria-label="Slide siguiente"
                     >
-                      <span className="carousel-control-next-icon" aria-hidden="true" />
+                      <span aria-hidden="true">›</span>
                     </button>
                   </>
                 ) : null}
               </div>
             ) : (
-              <div className="hero-banner-placeholder">
-                <img src={tribunalesBg} alt="Banner legal" className="home-carousel-image" />
-              </div>
+              <div className="hero-banner-placeholder" aria-hidden="true" />
             )}
             {/* Overlay oscuro para legibilidad */}
             <div className="hero-banner-overlay" />
@@ -250,6 +275,10 @@ function HomePage() {
           src={nicolasRuadesImg}
           alt="Abogado Nicolás Ruades - Estudio Jurídico ANR & Assoc" 
           className="who-image"
+          width={521}
+          height={782}
+          loading="lazy"
+          decoding="async"
         />
         {/* Un detalle elegante: marco dorado sutil */}
         <div className="who-image-frame"></div>

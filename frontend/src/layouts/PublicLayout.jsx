@@ -28,7 +28,7 @@ function PublicLayout({ children }) {
         <div className="public-header-inner public-marquina-surface">
           <div className="brand-group">
             <Link to="/" className="brand-logo" aria-label="Inicio" onClick={() => setMenuOpen(false)}>
-              <img src={logoImg} alt="Logo Estudio de Abogacía ANR & ASOC" className="brand-logo-img" height={44} />
+              <img src={logoImg} alt="Logo Estudio de Abogacía ANR & ASOC" className="brand-logo-img" width={66} height={44} />
             </Link>
             <span className="brand-title">
               ESTUDIO DE ABOGACIA
@@ -108,6 +108,8 @@ function PublicLayout({ children }) {
           src={logoImg}
           alt="Logo Estudio de Abogacía ANR & ASOC"
           className="footer-logo-img"
+          width={54}
+          height={36}
         />
       </div>
 

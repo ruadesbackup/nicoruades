@@ -97,7 +97,7 @@ return (
       />
 
       <section className="about-hero-img" aria-label="Equipo de abogados">
-        <img src={groupImg} alt="Equipo de abogados del Estudio Jurídico" className="about-group-photo" />
+        <img src={groupImg} alt="Equipo de abogados del Estudio Jurídico" className="about-group-photo" width={1537} height={1023} loading="eager" decoding="async" />
         <div className="about-hero-overlay">
           <h1 className="about-hero-title">Un equipo nacional de abogados experimentados</h1>
           <p className="about-hero-lead">
@@ -109,7 +109,7 @@ return (
       <section className="about-team-grid" aria-label="Abogados del estudio">
        {LAWYERS.map((lawyer) => (
   <div key={lawyer.id} className="lawyer-card">
-    <img src={lawyer.image} alt={lawyer.imageAlt} />
+    <img src={lawyer.image} alt={lawyer.imageAlt} width={320} height={320} loading="lazy" decoding="async" />
     <h3>{lawyer.name}</h3>
     <p>{lawyer.role}</p>
     

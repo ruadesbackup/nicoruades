@@ -37,7 +37,7 @@ function AdminLayout({ children }) {
 
           <div className="brand-group">
             <Link to="/" className="brand-logo" onClick={() => setMenuOpen(false)}>
-              <img src={logoImg} alt="Logo Estudio de Abogacía ANR & ASOC" height={44} />
+              <img src={logoImg} alt="Logo Estudio de Abogacía ANR & ASOC" width={66} height={44} />
             </Link>
             <span className="brand-title">
               ESTUDIO DE ABOGACIA
@@ -100,6 +100,8 @@ function AdminLayout({ children }) {
           src={logoImg}
           alt="Logo Estudio de Abogacía ANR & ASOC"
           className="footer-logo-img"
+          width={54}
+          height={36}
         />
       </div>
 

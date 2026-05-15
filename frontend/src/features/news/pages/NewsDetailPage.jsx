@@ -79,7 +79,10 @@ export default function NewsDetailPage() {
               src={resolveMediaUrl(news.img_desktop)}
               alt={news.title}
               className="news-detail-image"
+              width={1200}
+              height={675}
               loading="lazy"
+              decoding="async"
             />
           </div>
         )}

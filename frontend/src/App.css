@@ -248,8 +248,10 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: url('./assets/abstract-diamonds.webp') center center/cover fixed, #111;
-  background-blend-mode: darken;
+  background:
+    radial-gradient(circle at top left, rgba(201, 161, 74, 0.12), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(126, 197, 250, 0.10), transparent 24%),
+    linear-gradient(180deg, #101010 0%, #111 45%, #0b0b0b 100%);
 }
 
 /* Contenedor central para limitar el ancho de los contenidos públicos */
