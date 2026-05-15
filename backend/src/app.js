@@ -49,11 +49,10 @@ app.get('/sitemap.xml', async (_req, res) => {
 
 		// Otras URLs principales
 		const staticUrls = [
-			{ loc: `${BASE_URL}/`, priority: '1.0' },
-			{ loc: `${BASE_URL}/noticias`, priority: '0.9' },
-			{ loc: `${BASE_URL}/about`, priority: '0.7' },
-			{ loc: `${BASE_URL}/carousel`, priority: '0.6' },
-		].map(u => `    <url>\n      <loc>${u.loc}</loc>\n      <changefreq>weekly</changefreq>\n      <priority>${u.priority}</priority>\n    </url>`).join('\n');
+			{ loc: `${BASE_URL}/`, priority: '1.0', changefreq: 'weekly' },
+			{ loc: `${BASE_URL}/nosotros`, priority: '0.8', changefreq: 'monthly' },
+			{ loc: `${BASE_URL}/noticias`, priority: '0.9', changefreq: 'weekly' },
+		].map(u => `    <url>\n      <loc>${u.loc}</loc>\n      <changefreq>${u.changefreq}</changefreq>\n      <priority>${u.priority}</priority>\n    </url>`).join('\n');
 
 		const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${staticUrls}\n${noticiasUrls}\n</urlset>`;
 		res.header('Content-Type', 'application/xml');

@@ -31,8 +31,6 @@ function HomePage() {
   const { carouselSlides, reviews, loading, error } = useHomeData()
   const [brokenAvatarMap, setBrokenAvatarMap] = useState({})
   const [currentSlide, setCurrentSlide] = useState(0)
-  const serviceCardRefs = useRef([])
-  const testimonialCardRefs = useRef([])
   
   // 1. REFERENCIAS DIFERENTES (Vital para que no se pise el scroll)
   const reviewsScrollerRef = useRef(null)
@@ -68,6 +66,13 @@ function HomePage() {
 
   // 4. LÓGICA DE SERVICIOS (Corregida)
   const scrollServices = (direction) => {
+    const container = servicesScrollerRef.current
+    if (!container) return
+    
+    const card = container.querySelector('.service-card')
+    const gap = 16 // El gap que tenés en el CSS
+    const cardWidth = card ? card.getBoundingClientRect().width : 300
+    
     let newIndex
     if (direction === 'left') {
       newIndex = (currentService - 1 + listaServicios.length) % listaServicios.length
@@ -76,6 +81,10 @@ function HomePage() {
     }
     
     setCurrentService(newIndex)
+    container.scrollTo({
+      left: newIndex * (cardWidth + gap),
+      behavior: 'smooth',
+    })
   }
 
   // 5. AUTO-SCROLL (Separado para evitar el bucle infinito)
@@ -92,11 +101,12 @@ function HomePage() {
   useEffect(() => {
     const container = servicesScrollerRef.current
     if (!container) return
-    const targetCard = serviceCardRefs.current[currentService]
-    if (!targetCard) return
-
+    const card = container.querySelector('.service-card')
+    const gap = 16
+    const cardWidth = card ? card.getBoundingClientRect().width : 300
+    
     container.scrollTo({
-      left: targetCard.offsetLeft,
+      left: currentService * (cardWidth + gap),
       behavior: 'smooth',
     })
   }, [currentService])
@@ -116,22 +126,28 @@ function HomePage() {
   useEffect(() => {
     const container = reviewsScrollerRef.current
     if (!container) return
-
-    const targetCard = testimonialCardRefs.current[currentReview]
-    if (!targetCard) return
-
+    
+    const cards = container.querySelectorAll('.testimonial-card')
+    if (cards.length === 0) return
+    
+    const cardWidth = cards[0].getBoundingClientRect().width
+    const gap = 24
+    
     container.scrollTo({
-      left: targetCard.offsetLeft - (container.clientWidth - targetCard.clientWidth) / 2,
+      left: currentReview * (cardWidth + gap),
       behavior: 'smooth',
     })
   }, [currentReview])
 
   // 8. LÓGICA DE REVIEWS (Se mantiene igual, independiente)
   const scrollReviews = (direction) => {
-    if (!reviews.length) return
-    setCurrentReview((current) => {
-      const nextIndex = (current + direction + reviews.length) % reviews.length
-      return nextIndex
+    const container = reviewsScrollerRef.current
+    if (!container) return
+    const firstCard = container.querySelector('.testimonial-card') // Ajustado al nombre de tu clase
+    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 320
+    container.scrollBy({
+      left: direction * (cardWidth + 24), // 24 es el gap de 1.5rem de tu CSS
+      behavior: 'smooth',
     })
   }
 
@@ -143,14 +159,6 @@ function HomePage() {
   const goToNextSlide = () => {
     if (carouselSlides.length <= 1) return
     setCurrentSlide((current) => (current + 1) % carouselSlides.length)
-  }
-
-  const setServiceCardRef = (index) => (element) => {
-    serviceCardRefs.current[index] = element
-  }
-
-  const setTestimonialCardRef = (index) => (element) => {
-    testimonialCardRefs.current[index] = element
   }
 
   // ... (markAvatarAsBroken y jsonLd se mantienen igual)
@@ -330,7 +338,7 @@ function HomePage() {
     {/* El track donde se hace el .map() igual que hiciste con el Banner */}
   <div className="services-track" ref={servicesScrollerRef}>
   {listaServicios.map((servicio) => (
-    <div key={servicio.id} className="service-card" ref={setServiceCardRef(servicio.id - 1)}>
+    <div key={servicio.id} className="service-card">
       <h3>{servicio.titulo}</h3>
       <p>{servicio.desc}</p>
       
@@ -355,7 +363,7 @@ function HomePage() {
           {/* COLUMNA IZQUIERDA: TARJETAS DE RESEÑAS */}
           <div className="testimonials-cards" ref={reviewsScrollerRef}>
             {reviews?.map((review, index) => (
-                <div key={index} className="testimonial-card" ref={setTestimonialCardRef(index)}>
+                <div key={index} className="testimonial-card">
                   {/* 1. NOMBRE ARRIBA */}
                   <p className="testimonial-author-top">{review.author_name}</p>
 

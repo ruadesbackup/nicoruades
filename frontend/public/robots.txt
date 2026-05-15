@@ -1,0 +1,11 @@
+# Robots.txt para Nicolas Ruades - Abogado Penalista
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin/login
+
+# Sitemap
+Sitemap: https://www.nicolasruades.com.ar/sitemap.xml
+
+# Delays (opcional - sin delay por defecto)
+Crawl-delay: 0
