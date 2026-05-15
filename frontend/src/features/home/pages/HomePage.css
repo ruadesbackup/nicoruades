@@ -608,6 +608,22 @@ html, body {
     display: none;
   }
 
+  .services-track {
+    display: flex;
+    gap: 1rem;
+
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+
+    padding: 0 1rem;
+    scrollbar-width: none;
+  }
+
+  .services-track::-webkit-scrollbar {
+    display: none;
+  }
+
   .service-card {
     flex: 0 0 70%;
     scroll-snap-align: center;
